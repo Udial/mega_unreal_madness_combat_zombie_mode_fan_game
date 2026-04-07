@@ -3,7 +3,7 @@ import sys
 from ... import settings
 
 
-def is_running_handler() -> bool:
+def input_handler() -> bool:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
@@ -19,7 +19,7 @@ def run():
     running = True
 
     while running:
-        running = is_running_handler()
+        running = input_handler()
         dt = clock / 1000
         screen.fill(settings.GRAY_COLOR_TEMP)
         pygame.display.flip()
