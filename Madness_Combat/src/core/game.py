@@ -1,28 +1,32 @@
 import pygame
 import sys
 from ... import settings
+from ..scenes.main_menu_scene import MainMenuScene
+from .scene_manager import SceneManager
 
 
-def input_handler() -> bool:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return False
-    return True
+
+class Game:
+    def __init__(self):
+        self.screen = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
+        pygame.display.set_caption(settings.WINDOW_NAME)
+        self.clock = pygame.time.Clock()
+        self.running = True
+
+        self.scene_manager = SceneManager()
+        self.scene_manager.set_scene(MainMenuScene(self))
     
+    def run(self):
+        while self.running:
+            dt = self.clock.tick(settings.FPS) / 1000
 
-def run():
-    pygame.init()
-    screen = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
-    pygame.display.set_caption(settings.WINDOW_NAME)
-    pygame.time.Clock().tick(settings.FPS)
-    clock = pygame.time.Clock().tick(settings.FPS)
-    running = True
-
-    while running:
-        running = input_handler()
-        dt = clock / 1000
-        screen.fill(settings.GRAY_COLOR_TEMP)
-        pygame.display.flip()
-
-    pygame.quit()
-    sys.exit()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                else:
+                    self.scene_manager.handle_event(event)
+            
+            self.scene_manager.update(dt)
+            self.scene_manager.render(self.screen)
+        
+            pygame.display.flip()
