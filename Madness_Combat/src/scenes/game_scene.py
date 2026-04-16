@@ -1,6 +1,7 @@
 import pygame
 from ..core.base_scene import BaseScene
 from ... import settings
+from ..ui.button import Button
 
 
 class GameScene(BaseScene):
@@ -9,8 +10,23 @@ class GameScene(BaseScene):
 
         self.title_font = pygame.font.SysFont(None, 72)
         self.text_font = pygame.font.SysFont(None, 36)
+        self.exit_button = mega_button = Button(settings.BASE_BUTTON_WIDTH, 
+                            settings.BASE_BUTTON_HEIGHT, 
+                            (settings.SCREEN_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
+                            (settings.SCREEN_HEIGHT_MID - (settings.BASE_BUTTON_HEIGHT / 2)),
+                            "test_button",
+                            True,
+                            )
+        
 
     def handle_event(self, event):
+        clicked = self.exit_button.is_clicked()
+
+        if clicked:
+            from .main_menu_scene import MainMenuScene
+            self.game.scene_manager.set_scene(MainMenuScene(self.game))
+            
+        
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 from .main_menu_scene import MainMenuScene
@@ -30,3 +46,5 @@ class GameScene(BaseScene):
 
         screen.blit(title_surface, title_rect)
         screen.blit(hint_surface, hint_rect)
+
+        self.exit_button.render(screen)
