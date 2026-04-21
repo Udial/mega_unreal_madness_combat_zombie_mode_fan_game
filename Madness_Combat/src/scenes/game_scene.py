@@ -2,6 +2,9 @@ import pygame
 from ..core.base_scene import BaseScene
 from ... import settings
 from ..ui.button import Button
+from ..entities.player import Player
+from ..systems.input_system import InputSystem
+from ..systems.movement_system import MovementSystem
 
 
 class GameScene(BaseScene):
@@ -9,14 +12,18 @@ class GameScene(BaseScene):
         super().__init__(game)
 
         self.title_font = pygame.font.SysFont(None, 72)
-        self.text_font = pygame.font.SysFont(None, 36)
         self.exit_button = mega_button = Button(settings.BASE_BUTTON_WIDTH, 
                             settings.BASE_BUTTON_HEIGHT, 
                             (settings.SCREEN_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
                             (settings.SCREEN_HEIGHT_MID - (settings.BASE_BUTTON_HEIGHT / 2)),
-                            "test_button",
+                            "Exit",
                             True,
                             )
+        
+        self.player = Player(100, 100, 50, 100, 500, 100)
+        self.input_system = InputSystem()
+        self.movement_system = MovementSystem()
+        
         
 
     def handle_event(self, event):
@@ -33,18 +40,17 @@ class GameScene(BaseScene):
                 self.game.scene_manager.set_scene(MainMenuScene(self.game))
 
     def update(self, dt):
-        pass
+        input_state = self.input_system.get_input()
+
+        self.movement_system.update(self.player, input_state, dt)
 
     def render(self, screen):
         screen.fill(settings.GRAY_COLOR_TEMP)
-        
+
         title_surface = self.title_font.render("game scene", True, settings.WHITE)
-        hint_surface = self.text_font.render("press ESC to return to menu", True, settings.LIGHT_GRAY)
-
         title_rect = title_surface.get_rect(center=(screen.get_width() // 2, 200))
-        hint_rect = hint_surface.get_rect(center=(screen.get_width() // 2, 340))
-
         screen.blit(title_surface, title_rect)
-        screen.blit(hint_surface, hint_rect)
 
         self.exit_button.render(screen)
+
+        self.player.render(screen, settings.WHITE, self.player.rect)
