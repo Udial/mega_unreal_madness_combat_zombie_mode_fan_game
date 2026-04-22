@@ -12,7 +12,7 @@ class GameScene(BaseScene):
         super().__init__(game)
 
         self.title_font = pygame.font.SysFont(None, 72)
-        self.exit_button = mega_button = Button(settings.BASE_BUTTON_WIDTH, 
+        self.exit_button = Button(settings.BASE_BUTTON_WIDTH, 
                             settings.BASE_BUTTON_HEIGHT, 
                             (settings.SCREEN_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
                             (settings.SCREEN_HEIGHT_MID - (settings.BASE_BUTTON_HEIGHT / 2)),

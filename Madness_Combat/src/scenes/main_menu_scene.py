@@ -2,6 +2,7 @@ import pygame
 from ... import settings
 from ..core.base_scene import BaseScene
 from ..scenes.game_scene import GameScene
+from ..scenes.settings_scene import SettingsScene
 from ..ui.button import Button
 
 
@@ -45,6 +46,9 @@ class MainMenuScene(BaseScene):
         
         if exit:
             self.game.running = False
+
+        if settings_tab:
+            self.game.scene_manager.set_scene(SettingsScene(self.game))
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
