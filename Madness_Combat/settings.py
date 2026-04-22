@@ -12,6 +12,8 @@ LIGHT_GRAY = (211, 211, 211)
 BG_MENU_COLOR = (50, 50, 50)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
+DARK_GRAY = (50, 50, 50)
+BLACK = (0, 0, 0)
 
 BUTTON_FONT = pygame.font.SysFont(None, 36)
 BASE_BUTTON_WIDTH = 200

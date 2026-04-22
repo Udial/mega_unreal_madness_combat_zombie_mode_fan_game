@@ -5,6 +5,7 @@ from ..ui.button import Button
 from ..entities.player import Player
 from ..systems.input_system import InputSystem
 from ..systems.movement_system import MovementSystem
+from ..entities.wall import Wall
 
 
 class GameScene(BaseScene):
@@ -23,6 +24,7 @@ class GameScene(BaseScene):
         self.player = Player(100, 100, 50, 100, 500, 100)
         self.input_system = InputSystem()
         self.movement_system = MovementSystem()
+        self.left_wall = Wall(0,0,200,100,200,980,0,1080,False)
         
         
 
@@ -52,5 +54,6 @@ class GameScene(BaseScene):
         screen.blit(title_surface, title_rect)
 
         self.exit_button.render(screen)
+        self.left_wall.render(screen, settings.DARK_GRAY)
 
         self.player.render(screen, settings.WHITE, self.player.rect)
