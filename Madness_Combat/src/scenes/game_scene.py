@@ -21,7 +21,7 @@ class GameScene(BaseScene):
                             True,
                             )
         
-        self.player = Player(100, 100, 50, 100, 500, 100)
+        self.player = Player(800, 1000, 50, 100, 500, 100)
         self.input_system = InputSystem()
         self.movement_system = MovementSystem()
         self.left_wall = Wall(0,0,200,100,200,980,0,1080,False)
@@ -42,9 +42,18 @@ class GameScene(BaseScene):
                 self.game.scene_manager.set_scene(MainMenuScene(self.game))
 
     def update(self, dt):
+        self.player.prev_pos_x = self.player.pos_x
+        self.player.prev_pos_y = self.player.pos_y
+
         input_state = self.input_system.get_input()
 
         self.movement_system.update(self.player, input_state, dt)
+
+        if self.player.check_if_point_is_beyond_wall(self.left_wall.collision_line, self.player.rect):
+            self.player.pos_x = self.player.prev_pos_x
+
+        if self.player.check_if_point_is_beyond_wall(self.left_wall.collision_line, self.player.rect):
+            self.player.pos_y = self.player.prev_pos_y
 
     def render(self, screen):
         screen.fill(settings.GRAY_COLOR_TEMP)

@@ -13,6 +13,7 @@ class Wall():
         self.x_downleft = x_downleft
         self.y_downleft = y_downleft
         self.is_collideable = is_collideable
+        self.collision_line = ((self.x_downrigth, self.y_downright),(self.x_downleft, self.y_downleft))
 
     def render(self, screen, color):
         pygame.draw.polygon(screen, color, ((self.x_topleft, self.y_topleft),(self.x_topright, self.y_topright),(self.x_downrigth, self.y_downright),(self.x_downleft, self.y_downleft)), 0)
