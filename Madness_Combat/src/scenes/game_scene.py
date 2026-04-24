@@ -23,19 +23,24 @@ class GameScene(BaseScene):
                             )
         
         self.player = Player(800, 1000, 50, 100, 500, 100)
+
         self.input_system = InputSystem()
         self.collision_system = CollisionSystem()
         self.movement_system = MovementSystem(self.collision_system)
-        self.left_wall = Wall(0,0,200,100,200,980,0,1080,False)
-        
+
+        self.left_wall = Wall(settings.WALL_CORDS_TUPLE[0], False)
+        self.right_wall = Wall(settings.WALL_CORDS_TUPLE[1], False)
+        self.back_wall = Wall(settings.WALL_CORDS_TUPLE[2], False)
+        self.roof = Wall(settings.WALL_CORDS_TUPLE[3], False)
         
 
-    def handle_event(self):
+    def handle_event(self, event):
         clicked = self.exit_button.is_clicked()
 
         if clicked:
             from .main_menu_scene import MainMenuScene
             self.game.scene_manager.set_scene(MainMenuScene(self.game))
+
 
     def update(self, dt):
        
@@ -51,7 +56,11 @@ class GameScene(BaseScene):
         title_rect = title_surface.get_rect(center=(screen.get_width() // 2, 200))
         screen.blit(title_surface, title_rect)
 
-        self.exit_button.render(screen)
         self.left_wall.render(screen, settings.DARK_GRAY)
+        self.right_wall.render(screen, settings.DARK_GRAY)
+        self.back_wall.render(screen, settings.DARK_GRAY)
+        self.roof.render(screen, settings.DARK_GRAY)
+
+        self.exit_button.render(screen)
 
         self.player.render(screen, settings.WHITE, self.player.rect)

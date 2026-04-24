@@ -3,17 +3,13 @@ from ... import settings
 
 
 class Wall():
-    def __init__(self, x_topleft: int, y_topleft: int, x_topright: int, y_topright: int, x_downrigth: int, y_downright: int, x_downleft: int, y_downleft: int, is_collideable: bool):
-        self.x_topleft = x_topleft
-        self.y_topleft = y_topleft
-        self.x_topright = x_topright
-        self.y_topright = y_topright
-        self.x_downrigth = x_downrigth
-        self.y_downright = y_downright
-        self.x_downleft = x_downleft
-        self.y_downleft = y_downleft
+    def __init__(self, cords_tuple: tuple, is_collideable: bool):
+        self.x_topleft, self.y_topleft = cords_tuple[0]
+        self.x_topright, self.y_topright = cords_tuple[1]
+        self.x_downrigth, self.y_downright = cords_tuple[2]
+        self.x_downleft, self.y_downleft = cords_tuple[3]
         self.is_collideable = is_collideable
-        self.collision_line = ((self.x_downrigth, self.y_downright),(self.x_downleft, self.y_downleft))
+        self.collision_line = (cords_tuple[2],cords_tuple[3])
 
     def render(self, screen, color):
         pygame.draw.polygon(screen, color, ((self.x_topleft, self.y_topleft),(self.x_topright, self.y_topright),(self.x_downrigth, self.y_downright),(self.x_downleft, self.y_downleft)), 0)
