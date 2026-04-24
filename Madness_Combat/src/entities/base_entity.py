@@ -9,5 +9,5 @@ class BaseEntity:
         self.velocity = pygame.Vector2(0, 0)
         self.rect = pygame.Rect(self.pos_x, self.pos_y, width, height)
 
-    def update_hitbox(self):
-        self.rect.topleft = self.position
+    def update_rect(self):
+        self.rect.topleft = (self.pos_x, self.pos_y)

@@ -24,3 +24,5 @@ SCREEN_WIDTH_MID = SCREEN_WIDTH // 2
 
 HITBOX_WIDTH = 100
 HITBOX_HEIGHT = 250
+
+WALL_CORDS_TUPLE = ((None, None), (None, None), (None, None), (None, None))

@@ -5,6 +5,7 @@ from ..ui.button import Button
 from ..entities.player import Player
 from ..systems.input_system import InputSystem
 from ..systems.movement_system import MovementSystem
+from ..systems.collision_system import CollisionSystem
 from ..entities.wall import Wall
 
 
@@ -23,37 +24,25 @@ class GameScene(BaseScene):
         
         self.player = Player(800, 1000, 50, 100, 500, 100)
         self.input_system = InputSystem()
-        self.movement_system = MovementSystem()
+        self.collision_system = CollisionSystem()
+        self.movement_system = MovementSystem(self.collision_system)
         self.left_wall = Wall(0,0,200,100,200,980,0,1080,False)
         
         
 
-    def handle_event(self, event):
+    def handle_event(self):
         clicked = self.exit_button.is_clicked()
 
         if clicked:
             from .main_menu_scene import MainMenuScene
             self.game.scene_manager.set_scene(MainMenuScene(self.game))
-            
-        
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                from .main_menu_scene import MainMenuScene
-                self.game.scene_manager.set_scene(MainMenuScene(self.game))
 
     def update(self, dt):
-        self.player.prev_pos_x = self.player.pos_x
-        self.player.prev_pos_y = self.player.pos_y
-
+       
         input_state = self.input_system.get_input()
 
         self.movement_system.update(self.player, input_state, dt)
 
-        if self.player.check_if_point_is_beyond_wall(self.left_wall.collision_line, self.player.rect):
-            self.player.pos_x = self.player.prev_pos_x
-
-        if self.player.check_if_point_is_beyond_wall(self.left_wall.collision_line, self.player.rect):
-            self.player.pos_y = self.player.prev_pos_y
 
     def render(self, screen):
         screen.fill(settings.GRAY_COLOR_TEMP)
