@@ -22,7 +22,7 @@ class GameScene(BaseScene):
                             True,
                             )
         
-        self.player = Player(800, 1000, 50, 100, 500, 100)
+        self.player = Player(800, 900, 50, 100, 500, 100)
 
         self.input_system = InputSystem()
         self.collision_system = CollisionSystem()
