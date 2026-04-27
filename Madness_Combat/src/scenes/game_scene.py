@@ -3,10 +3,12 @@ from ..core.base_scene import BaseScene
 from ... import settings
 from ..ui.button import Button
 from ..entities.player import Player
+from ..entities.wall import Wall
+from ..entities.entry_point import EntryPoint
 from ..systems.input_system import InputSystem
 from ..systems.movement_system import MovementSystem
 from ..systems.collision_system import CollisionSystem
-from ..entities.wall import Wall
+from ..systems.spawn_manager import SpawnManager
 
 
 class GameScene(BaseScene):
@@ -22,11 +24,21 @@ class GameScene(BaseScene):
                             True,
                             )
         
+        self.test_entry_point = EntryPoint(settings.SCREEN_WIDTH_MID - settings.ONE_EIGHT_OF_SCREEN_WIDTH,
+                                    (settings.ONE_FORTH_OF_SCREEN_HEIGHT * 3) - 100,
+                                    300,
+                                    100,
+                                    'window'
+                                    )
+        
         self.player = Player(800, 900, 50, 100, 500, 100)
+        self.entities_list = []
+        self.entry_points = [self.test_entry_point]
 
         self.input_system = InputSystem()
         self.collision_system = CollisionSystem()
         self.movement_system = MovementSystem(self.collision_system)
+        self.spawn_manager = SpawnManager(self.entry_points, self.entities_list)
 
         self.left_wall = Wall(settings.WALL_CORDS_TUPLE[0], False)
         self.right_wall = Wall(settings.WALL_CORDS_TUPLE[1], False)
@@ -48,6 +60,8 @@ class GameScene(BaseScene):
 
         self.movement_system.update(self.player, input_state, dt)
 
+        self.spawn_manager.update(dt)
+
 
     def render(self, screen):
         screen.fill(settings.GRAY_COLOR_TEMP)
@@ -60,6 +74,12 @@ class GameScene(BaseScene):
         self.right_wall.render(screen, settings.DARK_GRAY)
         self.back_wall.render(screen, settings.DARK_GRAY)
         self.roof.render(screen, settings.DARK_GRAY)
+
+        for ep in self.entry_points:
+            ep.render(screen)
+
+        for entity in self.entities_list:
+            entity.render(screen)
 
         self.exit_button.render(screen)
 
