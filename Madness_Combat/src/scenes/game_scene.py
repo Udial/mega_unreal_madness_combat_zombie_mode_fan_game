@@ -5,10 +5,12 @@ from ..ui.button import Button
 from ..entities.player import Player
 from ..entities.wall import Wall
 from ..entities.entry_point import EntryPoint
+from ..entities.zombie import Zombie
 from ..systems.input_system import InputSystem
 from ..systems.movement_system import MovementSystem
 from ..systems.collision_system import CollisionSystem
 from ..systems.spawn_manager import SpawnManager
+from ..systems.ai_system import AISystem
 
 
 class GameScene(BaseScene):
@@ -39,6 +41,7 @@ class GameScene(BaseScene):
         self.collision_system = CollisionSystem()
         self.movement_system = MovementSystem(self.collision_system)
         self.spawn_manager = SpawnManager(self.entry_points, self.entities_list)
+        self.ai_system = AISystem(self.movement_system, self.player)
 
         self.left_wall = Wall(settings.WALL_CORDS_TUPLE[0], False)
         self.right_wall = Wall(settings.WALL_CORDS_TUPLE[1], False)
@@ -61,6 +64,10 @@ class GameScene(BaseScene):
         self.movement_system.update(self.player, input_state, dt)
 
         self.spawn_manager.update(dt)
+
+        zombies = [e for e in self.entities_list if isinstance(e, Zombie)]
+        
+        self.ai_system.update(zombies, dt)
 
 
     def render(self, screen):
