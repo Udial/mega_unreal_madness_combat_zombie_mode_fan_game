@@ -8,6 +8,7 @@ class BaseEntity:
         self.position = pygame.Vector2(self.pos_x, self.pos_y)
         self.velocity = pygame.Vector2(0, 0)
         self.rect = pygame.Rect(self.pos_x, self.pos_y, width, height)
+        self.is_alive = True
 
     def update_rect(self):
         self.rect.topleft = (self.pos_x, self.pos_y)
