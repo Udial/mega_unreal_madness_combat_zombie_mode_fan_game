@@ -6,11 +6,14 @@ from ..entities.player import Player
 from ..entities.wall import Wall
 from ..entities.entry_point import EntryPoint
 from ..entities.zombie import Zombie
+from ..entities.bullet import Bullet
 from ..systems.input_system import InputSystem
 from ..systems.movement_system import MovementSystem
 from ..systems.collision_system import CollisionSystem
 from ..systems.spawn_manager import SpawnManager
 from ..systems.ai_system import AISystem
+from ..systems.combat_system import CombatSystem
+from ..systems.damage_system import DamageSystem
 
 
 class GameScene(BaseScene):
@@ -34,14 +37,17 @@ class GameScene(BaseScene):
                                     )
         
         self.player = Player(800, 900, 50, 100, 500, 100)
-        self.entities_list = []
+        self.zombie_list = []
+        self.projectile_list = []
         self.entry_points = [self.test_entry_point]
 
         self.input_system = InputSystem()
         self.collision_system = CollisionSystem()
         self.movement_system = MovementSystem(self.collision_system)
-        self.spawn_manager = SpawnManager(self.entry_points, self.entities_list)
+        self.spawn_manager = SpawnManager(self.entry_points, self.zombie_list)
         self.ai_system = AISystem(self.movement_system, self.player)
+        self.combat_system = CombatSystem(self.projectile_list)
+        self.damage_system = DamageSystem()
 
         self.left_wall = Wall(settings.WALL_CORDS_TUPLE[0], False)
         self.right_wall = Wall(settings.WALL_CORDS_TUPLE[1], False)
@@ -58,16 +64,31 @@ class GameScene(BaseScene):
 
 
     def update(self, dt):
+
+        self.player.weapon.uptade(dt)
        
         input_state = self.input_system.get_input()
 
         self.movement_system.update(self.player, input_state, dt)
 
+        self.combat_system.handle_player_shoot(self.player, input_state)
+
         self.spawn_manager.update(dt)
 
-        zombies = [e for e in self.entities_list if isinstance(e, Zombie)]
+        zombies = [e for e in self.zombie_list if isinstance(e, Zombie)]
         
+        projectiles = [e for e in self.projectile_list if isinstance(e, Bullet)]
+
         self.ai_system.update(zombies, dt)
+
+        for proj in projectiles:
+            proj.update(dt)
+
+        self.combat_system.process_bullets(projectiles, zombies, self.damage_system)
+
+        self.projectile_list[:] = [e for e in self.projectile_list if e.is_alive]
+        self.zombie_list[:] = [e for e in self.zombie_list if e.is_alive]
+        
 
 
     def render(self, screen):
@@ -85,9 +106,12 @@ class GameScene(BaseScene):
         for ep in self.entry_points:
             ep.render(screen)
 
-        for entity in self.entities_list:
+        for entity in self.zombie_list:
             entity.render(screen)
 
         self.exit_button.render(screen)
 
         self.player.render(screen, settings.WHITE, self.player.rect)
+
+        for proj in self.projectile_list:
+            proj.render(screen)
