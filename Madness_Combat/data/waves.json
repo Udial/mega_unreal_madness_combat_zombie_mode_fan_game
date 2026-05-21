@@ -1,0 +1,24 @@
+{
+    "waves": [
+        {
+            "wave": 1,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 5
+                }
+            ],
+            "spawn_delay": 2
+        },
+        {
+            "wave": 2,
+            "zombies": [
+                {
+                    "type" : "normal",
+                    "count": 10
+                }
+            ],
+            "spawn_delay": 1
+        }
+    ]
+}

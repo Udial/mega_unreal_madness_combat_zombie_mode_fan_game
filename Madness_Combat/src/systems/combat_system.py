@@ -22,7 +22,6 @@ class CombatSystem:
             )
 
             self.entities.append(bullet)
-            print('hui')
 
     def get_direction(self, player):
         mos_pos = pygame.mouse.get_pos()

@@ -11,6 +11,7 @@ from ..systems.input_system import InputSystem
 from ..systems.movement_system import MovementSystem
 from ..systems.collision_system import CollisionSystem
 from ..systems.spawn_manager import SpawnManager
+from ..systems.wave_manager import WaveManager
 from ..systems.ai_system import AISystem
 from ..systems.combat_system import CombatSystem
 from ..systems.damage_system import DamageSystem
@@ -29,30 +30,30 @@ class GameScene(BaseScene):
                             True,
                             )
         
-        self.test_entry_point = EntryPoint(settings.SCREEN_WIDTH_MID - settings.ONE_EIGHT_OF_SCREEN_WIDTH,
-                                    (settings.ONE_FORTH_OF_SCREEN_HEIGHT * 3) - 100,
-                                    300,
-                                    100,
-                                    'window'
-                                    )
-        
-        self.player = Player(800, 900, 50, 100, 500, 100)
-        self.zombie_list = []
-        self.projectile_list = []
-        self.entry_points = [self.test_entry_point]
-
-        self.input_system = InputSystem()
-        self.collision_system = CollisionSystem()
-        self.movement_system = MovementSystem(self.collision_system)
-        self.spawn_manager = SpawnManager(self.entry_points, self.zombie_list)
-        self.ai_system = AISystem(self.movement_system, self.player)
-        self.combat_system = CombatSystem(self.projectile_list)
-        self.damage_system = DamageSystem()
+        self.window_entry = EntryPoint(settings.ENTRY_POINTS_TUPLE[0], 'window')
+        #self.left_door_entry = EntryPoint(settings.ENTRY_POINTS_TUPLE[1], 'door')
+        #self.right_door_entry = EntryPoint(settings.ENTRY_POINTS_TUPLE[2], 'door')
 
         self.left_wall = Wall(settings.WALL_CORDS_TUPLE[0], False)
         self.right_wall = Wall(settings.WALL_CORDS_TUPLE[1], False)
         self.back_wall = Wall(settings.WALL_CORDS_TUPLE[2], False)
         self.roof = Wall(settings.WALL_CORDS_TUPLE[3], False)
+
+        self.walls = [self.left_wall, self.right_wall, self.back_wall, self.roof]
+        self.player = Player(800, 900, 50, 100, 500, 100)
+        self.zombie_list = []
+        self.projectile_list = []
+        self.entry_points = [self.window_entry]
+        
+
+        self.input_system = InputSystem()
+        self.collision_system = CollisionSystem()
+        self.movement_system = MovementSystem(self.collision_system)
+        self.spawn_manager = SpawnManager(self.entry_points, self.zombie_list)
+        self.wave_manager = WaveManager(self.spawn_manager, self.zombie_list)
+        self.ai_system = AISystem(self.movement_system, self.player)
+        self.combat_system = CombatSystem(self.projectile_list)
+        self.damage_system = DamageSystem()
         
 
     def handle_event(self, event):
@@ -64,6 +65,7 @@ class GameScene(BaseScene):
 
 
     def update(self, dt):
+        self.wave_manager.update(dt)
 
         self.player.weapon.uptade(dt)
        
@@ -72,8 +74,6 @@ class GameScene(BaseScene):
         self.movement_system.update(self.player, input_state, dt)
 
         self.combat_system.handle_player_shoot(self.player, input_state)
-
-        self.spawn_manager.update(dt)
 
         zombies = [e for e in self.zombie_list if isinstance(e, Zombie)]
         
@@ -98,13 +98,12 @@ class GameScene(BaseScene):
         title_rect = title_surface.get_rect(center=(screen.get_width() // 2, 200))
         screen.blit(title_surface, title_rect)
 
-        self.left_wall.render(screen, settings.DARK_GRAY)
-        self.right_wall.render(screen, settings.DARK_GRAY)
-        self.back_wall.render(screen, settings.DARK_GRAY)
-        self.roof.render(screen, settings.DARK_GRAY)
+        
+        for wall in self.walls:
+            wall.render(screen, settings.DARK_GRAY)
 
         for ep in self.entry_points:
-            ep.render(screen)
+            ep.render(screen, settings.SLIGHTLY_BRIGHTER_DARK_GRAY)
 
         for entity in self.zombie_list:
             entity.render(screen)

@@ -19,7 +19,7 @@ class SpawnManager:
             self.spawn_timer = 0
             self.spawn_zombie()
 
-    def spawn_zombie(self):
+    def spawn_zombie(self, type: str):
         avalible_entries = [
             ep for ep in self.entry_points if ep.is_open()
         ]
@@ -31,6 +31,7 @@ class SpawnManager:
 
         x, y = entry.get_spawn_point()
         
-        zombie = Zombie(x, y)
+        if type == "normal":
+            zombie = Zombie(x, y)
 
         self.entities.append(zombie)
