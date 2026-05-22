@@ -4,7 +4,7 @@ from .spawn_manager import SpawnManager
 
 
 class WaveManager:
-    def __init__(self, spawn_manager: SpawnManager, zombie: list):
+    def __init__(self, spawn_manager: SpawnManager, zombie: list, entry_points: list):
         self.spawn_manager = spawn_manager
         self.zombie = zombie
 
@@ -46,7 +46,7 @@ class WaveManager:
         print(f"DEBUG wave {self.curent_wave_index + 1} started")
 
 
-    def update(self, dt):
+    def update(self, enrty_points: list, dt):
         if self.is_in_break:
             
             self.break_timer += dt
@@ -78,6 +78,14 @@ class WaveManager:
                 
                 self.spawn_manager.spawn_zombie(zombie_type)
         
-        if not self.spawn_queue and not self.zombie:
+        barricaded_zombies_killed = False
+        for ep in enrty_points:
+            if ep.rapid_spawn_queue:
+                barricaded_zombies_killed = False
+                return
+            else:
+                barricaded_zombies_killed = True    
+        
+        if not self.spawn_queue and not self.zombie and barricaded_zombies_killed:
             self.is_in_break = True
             print("DEBUG Wave completed")

@@ -15,6 +15,12 @@ class CollisionSystem:
         rect.bottomright
         ]
     
+    def get_head_pos(self, rect: pygame.Rect):
+        return [rect.topleft,
+        (rect.centerx, rect.top),
+        rect.topright
+        ]
+
     def is_player_point_past_line_horizontal(self, player_feet_point: tuple) -> bool:
         if player_feet_point[0] < SCREEN_WIDTH_MID:
             A = self.left_wall_cords[0] 

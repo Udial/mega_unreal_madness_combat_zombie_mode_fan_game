@@ -4,7 +4,9 @@ from .player import Player
 from .barricade import Barricade
 from ..systems.collision_system import CollisionSystem
 from ..systems.input_system import InputState
-from ...settings import BLACK
+from ..systems.damage_system import DamageSystem
+from ..systems.spawn_manager import SpawnManager
+from ...settings import BLACK, ZOMBIE_DAMAGE
 
 
 class EntryPoint(BaseEntity):
@@ -19,20 +21,39 @@ class EntryPoint(BaseEntity):
         self.player_interaction_rect = pygame.Rect(self.x_downleft, self.y_downleft, self.width, 50)
 
         super().__init__(self.x_topleft, self.y_topleft, self.width, self.height)
-        
+
+        self.barricade = None
         self.barricade_placement_timer = 0
         self.barricade_placement_time = 3
         self.type = entry_type
         self.is_blocked = False
         self.spawn_point = self.rect.center
+        self.rapid_spawn_queue = []
+        self.attack_timer = 0
+        self.attack_time = 2
 
-    def update(self, player: Player, collision_system: CollisionSystem, input_state: InputState, dt, barricade_list: list):
+    def update(self, player: Player, collision_system: CollisionSystem, input_state: InputState, damage_system: DamageSystem, spawn_manager: SpawnManager, dt):
         x = self.player_interaction(player, collision_system, input_state, dt)
 
         if x:
             barricade = Barricade(self)
-            barricade_list.append(barricade)
             self.place_barricade(barricade)
+
+        if self.rapid_spawn_queue and self.is_blocked and self.barricade != None:
+            if self.barricade.hp <= 0:
+                self.remove_barricade()
+                spawn_manager.rapid_spawn(self.rapid_spawn_queue, dt)
+
+            
+            self.attack_timer += dt
+
+            if self.attack_timer >= self.attack_time:
+                damage_mult = len(self.rapid_spawn_queue)
+                damage_system.apply_damage(self.barricade, ZOMBIE_DAMAGE * damage_mult)
+                self.attack_timer = 0
+                print("DEBUG Barricade damaged")
+
+
     
     def can_player_interact(self, player: Player, collision_system: CollisionSystem) -> bool:
         

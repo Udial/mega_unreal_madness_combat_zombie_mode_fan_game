@@ -50,7 +50,7 @@ class GameScene(BaseScene):
         self.input_system = InputSystem()
         self.movement_system = MovementSystem(self.collision_system)
         self.spawn_manager = SpawnManager(self.entry_points, self.zombie_list)
-        self.wave_manager = WaveManager(self.spawn_manager, self.zombie_list)
+        self.wave_manager = WaveManager(self.spawn_manager, self.zombie_list, self.entry_points)
         self.ai_system = AISystem(self.movement_system, self.player)
         self.combat_system = CombatSystem(self.projectile_list)
         self.damage_system = DamageSystem()
@@ -65,7 +65,7 @@ class GameScene(BaseScene):
 
 
     def update(self, dt):
-        self.wave_manager.update(dt)
+        self.wave_manager.update(self.entry_points, dt)
 
         self.player.weapon.uptade(dt)
        
@@ -74,7 +74,7 @@ class GameScene(BaseScene):
         self.movement_system.update(self.player, input_state, dt)
 
         for ep in self.entry_points:
-            ep.update(self.player, self.collision_system, input_state, dt, self.barricade_list)
+            ep.update(self.player, self.collision_system, input_state, self.damage_system, self.spawn_manager, dt)
 
         self.combat_system.handle_player_shoot(self.player, input_state)
 
@@ -92,10 +92,6 @@ class GameScene(BaseScene):
         self.projectile_list[:] = [e for e in self.projectile_list if e.is_alive]
         self.zombie_list[:] = [e for e in self.zombie_list if e.is_alive]
 
-        for ep in self.entry_points:
-            print(ep.is_blocked)
-        
-
 
     def render(self, screen):
         screen.fill(settings.GRAY_COLOR_TEMP)
@@ -111,8 +107,9 @@ class GameScene(BaseScene):
         for ep in self.entry_points:
             ep.render(screen, settings.SLIGHTLY_BRIGHTER_DARK_GRAY)
         
-        for b in self.barricade_list:
-            b.render(screen)
+        for ep in self.entry_points:
+            if ep.barricade != None:
+                ep.barricade.render(screen)
 
         for entity in self.zombie_list:
             entity.render(screen)
