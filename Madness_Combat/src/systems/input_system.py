@@ -4,6 +4,7 @@ class InputState:
     def __init__(self):
         self.move = pygame.Vector2(0, 0)
         self.shoot = False
+        self.interact = False
 
 class InputSystem:
     def get_input(self) -> object:
@@ -18,6 +19,10 @@ class InputSystem:
             input_state.move.x = -1
         if keys[pygame.K_d]:
             input_state.move.x = 1
+        if keys[pygame.K_e]:
+            input_state.interact = True
+        else:
+            input_state.interact = False
         
         mouse_buttons = pygame.mouse.get_pressed()
         input_state.shoot = mouse_buttons[0]
