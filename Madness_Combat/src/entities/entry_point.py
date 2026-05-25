@@ -10,13 +10,14 @@ from ...settings import BLACK, ZOMBIE_DAMAGE
 
 
 class EntryPoint(BaseEntity):
-    def __init__(self, cords_tuple: tuple, entry_type: str):
+    def __init__(self, cords_tuple: tuple, entry_type: str, entry_index: int):
         self.x_topleft, self.y_topleft = cords_tuple[0]
         self.x_topright, self.y_topright = cords_tuple[1]
         self.x_downrigth, self.y_downright = cords_tuple[2]
         self.x_downleft, self.y_downleft = cords_tuple[3]
         self.width = self.x_topright - self.x_topleft
         self.height = self.y_downleft - self.y_topleft
+        self.entry_index = entry_index
 
         self.player_interaction_rect = pygame.Rect(self.x_downleft, self.y_downleft, self.width, 50)
 
@@ -42,7 +43,6 @@ class EntryPoint(BaseEntity):
         if self.rapid_spawn_queue and self.is_blocked and self.barricade != None:
             if self.barricade.hp <= 0:
                 self.remove_barricade()
-                spawn_manager.rapid_spawn(self.rapid_spawn_queue, dt)
 
             
             self.attack_timer += dt

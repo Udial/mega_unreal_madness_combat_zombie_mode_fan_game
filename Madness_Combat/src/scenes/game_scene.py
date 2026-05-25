@@ -30,7 +30,7 @@ class GameScene(BaseScene):
                             True,
                             )
         
-        self.window_entry = EntryPoint(settings.ENTRY_POINTS_TUPLE[0], 'window')
+        self.window_entry = EntryPoint(settings.ENTRY_POINTS_TUPLE[0], 'window', 0)
         #self.left_door_entry = EntryPoint(settings.ENTRY_POINTS_TUPLE[1], 'door')
         #self.right_door_entry = EntryPoint(settings.ENTRY_POINTS_TUPLE[2], 'door')
 

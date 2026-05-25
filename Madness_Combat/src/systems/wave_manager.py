@@ -1,6 +1,8 @@
 import json
 import pygame
 from .spawn_manager import SpawnManager
+from ..entities.entry_point import EntryPoint
+from ...settings import ZOMBIE_RAPID_SPAWN_DELAY
 
 
 class WaveManager:
@@ -16,6 +18,8 @@ class WaveManager:
         self.curent_wave_index = 0
         self.spawn_queue = []
         self.spawn_timer = 0
+        self.rapid_spawn_timer = 0
+        self.rapid_spawn_delay = ZOMBIE_RAPID_SPAWN_DELAY
 
         self.is_in_break = False
         self.break_timer = 0
@@ -46,7 +50,7 @@ class WaveManager:
         print(f"DEBUG wave {self.curent_wave_index + 1} started")
 
 
-    def update(self, enrty_points: list, dt):
+    def update(self, enrty_points: list[EntryPoint], dt):
         if self.is_in_break:
             
             self.break_timer += dt
@@ -77,15 +81,27 @@ class WaveManager:
                 zombie_type = self.spawn_queue.pop(0)
                 
                 self.spawn_manager.spawn_zombie(zombie_type)
-        
+
+                print("DEBUG Attempted to spawn a zombie")
+
+        for ep in enrty_points:
+            if ep.rapid_spawn_queue and not ep.is_blocked:
+                if self.spawn_timer >= self.rapid_spawn_delay:
+                    self.spawn_timer = 0
+
+                    zombie = ep.rapid_spawn_queue.pop(0)
+                    self.spawn_manager.spawn_zombie(zombie, ep.entry_index)
+                    print("DEBUG Attempting to spawn queued zombie")
+                    
+                    
         barricaded_zombies_killed = False
         for ep in enrty_points:
             if ep.rapid_spawn_queue:
                 barricaded_zombies_killed = False
                 return
             else:
-                barricaded_zombies_killed = True    
-        
+                barricaded_zombies_killed = True
+
         if not self.spawn_queue and not self.zombie and barricaded_zombies_killed:
             self.is_in_break = True
             print("DEBUG Wave completed")
