@@ -9,6 +9,7 @@ class Player(BaseEntity):
         self.speed = speed
         self.hp = hp
         self.weapon = LongRangeWeapon()
+        self.amount_of_barricades = 0
     
     def render(self, screen: pygame.surface, color: tuple, rect: pygame.Rect):
         pygame.draw.rect(screen, color, rect)

@@ -33,7 +33,7 @@ class EntryPoint(BaseEntity):
         self.attack_timer = 0
         self.attack_time = 2
 
-    def update(self, player: Player, collision_system: CollisionSystem, input_state: InputState, damage_system: DamageSystem, spawn_manager: SpawnManager, dt):
+    def update(self, player: Player, collision_system: CollisionSystem, input_state: InputState, damage_system: DamageSystem, dt):
         x = self.player_interaction(player, collision_system, input_state, dt)
 
         if x:
@@ -74,11 +74,12 @@ class EntryPoint(BaseEntity):
         
         interacting = input_state.interact
 
-        if player_is_near and interacting and not self.is_blocked:
+        if player_is_near and interacting and not self.is_blocked and player.amount_of_barricades >= 1:
             self.barricade_placement_timer += dt
 
             if self.barricade_placement_timer >= self.barricade_placement_time:
                 self.barricade_placement_timer = 0
+                player.amount_of_barricades -= 1
                 return True
         else:
             self.barricade_placement_timer = 0

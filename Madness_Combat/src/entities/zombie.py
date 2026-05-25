@@ -8,6 +8,7 @@ class Zombie(BaseEntity):
         super().__init__(x, y, HITBOX_WIDTH, HITBOX_HEIGHT)
         self.speed = ZOMBIE_SPEED
         self.hp = ZOMBIE_HEALTH
+        self.reward = 10
 
     def render(self, screen):
         pygame.draw.rect(screen, ZOMBIE_GREEN, self.rect)

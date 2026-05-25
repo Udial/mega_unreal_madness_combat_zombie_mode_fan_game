@@ -15,7 +15,8 @@ from ..systems.wave_manager import WaveManager
 from ..systems.ai_system import AISystem
 from ..systems.combat_system import CombatSystem
 from ..systems.damage_system import DamageSystem
-
+from ..systems.economy_manager import EconomyManager
+from ..systems.shop_manager import ShopManager
 
 class GameScene(BaseScene):
     def __init__(self, game):
@@ -46,13 +47,15 @@ class GameScene(BaseScene):
         self.entry_points = [self.window_entry]
         self.barricade_list = []
         
+        self.economy_manager = EconomyManager()
+        self.shop_manager = ShopManager(self.economy_manager, self.player)
         self.collision_system = CollisionSystem()
         self.input_system = InputSystem()
         self.movement_system = MovementSystem(self.collision_system)
         self.spawn_manager = SpawnManager(self.entry_points, self.zombie_list)
         self.wave_manager = WaveManager(self.spawn_manager, self.zombie_list, self.entry_points)
         self.ai_system = AISystem(self.movement_system, self.player)
-        self.combat_system = CombatSystem(self.projectile_list)
+        self.combat_system = CombatSystem(self.projectile_list, self.player, self.economy_manager)
         self.damage_system = DamageSystem()
         
 
@@ -71,12 +74,14 @@ class GameScene(BaseScene):
        
         input_state = self.input_system.get_input()
 
+        self.shop_manager.buy(input_state)
+
         self.movement_system.update(self.player, input_state, dt)
 
         for ep in self.entry_points:
-            ep.update(self.player, self.collision_system, input_state, self.damage_system, self.spawn_manager, dt)
+            ep.update(self.player, self.collision_system, input_state, self.damage_system, dt)
 
-        self.combat_system.handle_player_shoot(self.player, input_state)
+        self.combat_system.handle_player_shoot(input_state)
 
         zombies = [e for e in self.zombie_list if isinstance(e, Zombie)]
         
