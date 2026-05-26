@@ -7,6 +7,7 @@ from ..entities.wall import Wall
 from ..entities.entry_point import EntryPoint
 from ..entities.zombie import Zombie
 from ..entities.bullet import Bullet
+from ..entities.weapon import Ranged, Melee
 from ..systems.input_system import InputSystem
 from ..systems.movement_system import MovementSystem
 from ..systems.collision_system import CollisionSystem
@@ -17,6 +18,7 @@ from ..systems.combat_system import CombatSystem
 from ..systems.damage_system import DamageSystem
 from ..systems.economy_manager import EconomyManager
 from ..systems.shop_manager import ShopManager
+from ..systems.weapon_factory import WeaponFactory
 
 class GameScene(BaseScene):
     def __init__(self, game):
@@ -55,8 +57,11 @@ class GameScene(BaseScene):
         self.spawn_manager = SpawnManager(self.entry_points, self.zombie_list)
         self.wave_manager = WaveManager(self.spawn_manager, self.zombie_list, self.entry_points)
         self.ai_system = AISystem(self.movement_system, self.player)
-        self.combat_system = CombatSystem(self.projectile_list, self.player, self.economy_manager)
         self.damage_system = DamageSystem()
+        self.combat_system = CombatSystem(self.player, self.economy_manager, self.damage_system, self.zombie_list, self.projectile_list)
+        self.weapon_factory = WeaponFactory(self.combat_system, self.player)
+
+        self.player.weapon = self.weapon_factory.create_weapon("pistol")
         
 
     def handle_event(self, event):
@@ -68,20 +73,36 @@ class GameScene(BaseScene):
 
 
     def update(self, dt):
-        self.wave_manager.update(self.entry_points, dt)
+        self.wave_manager.update(dt)
 
-        self.player.weapon.uptade(dt)
+        if self.player.weapon != None:
+            self.player.weapon.update(dt)
        
         input_state = self.input_system.get_input()
 
+        if isinstance(self.player.weapon, Melee):
+            self.player.weapon.update(dt)
+        elif isinstance(self.player.weapon, Ranged):
+            self.player.weapon.update_ranged(dt)
+        
+        if isinstance(self.player.weapon, Ranged):
+            self.player.weapon.start_reload(input_state)
+
+
         self.shop_manager.buy(input_state)
 
+        self.combat_system.attack(input_state)
+
         self.movement_system.update(self.player, input_state, dt)
+
+        if self.player.weapon != None:
+            if self.player.weapon == Ranged:
+                self.player.weapon.start_reload(input_state)
 
         for ep in self.entry_points:
             ep.update(self.player, self.collision_system, input_state, self.damage_system, dt)
 
-        self.combat_system.handle_player_shoot(input_state)
+        #self.combat_system.process_bullets(input_state)
 
         zombies = [e for e in self.zombie_list if isinstance(e, Zombie)]
         
@@ -92,7 +113,7 @@ class GameScene(BaseScene):
         for proj in projectiles:
             proj.update(dt)
 
-        self.combat_system.process_bullets(projectiles, zombies, self.damage_system)
+        self.combat_system.process_bullets()
 
         self.projectile_list[:] = [e for e in self.projectile_list if e.is_alive]
         self.zombie_list[:] = [e for e in self.zombie_list if e.is_alive]

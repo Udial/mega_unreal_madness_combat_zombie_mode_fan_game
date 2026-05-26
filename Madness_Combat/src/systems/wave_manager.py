@@ -6,9 +6,10 @@ from ...settings import ZOMBIE_RAPID_SPAWN_DELAY
 
 
 class WaveManager:
-    def __init__(self, spawn_manager: SpawnManager, zombie: list, entry_points: list):
+    def __init__(self, spawn_manager: SpawnManager, zombie: list, entry_points: list[EntryPoint]):
         self.spawn_manager = spawn_manager
         self.zombie = zombie
+        self.entry_points = entry_points
 
         with open("Madness_Combat/data/waves.json", "r") as file:
             data = json.load(file)
@@ -50,7 +51,7 @@ class WaveManager:
         print(f"DEBUG wave {self.curent_wave_index + 1} started")
 
 
-    def update(self, enrty_points: list[EntryPoint], dt):
+    def update(self, dt):
         if self.is_in_break:
             
             self.break_timer += dt
@@ -84,7 +85,7 @@ class WaveManager:
 
                 print("DEBUG Attempted to spawn a zombie")
 
-        for ep in enrty_points:
+        for ep in self.entry_points:
             if ep.rapid_spawn_queue and not ep.is_blocked:
                 if self.spawn_timer >= self.rapid_spawn_delay:
                     self.spawn_timer = 0
@@ -95,7 +96,7 @@ class WaveManager:
                     
                     
         barricaded_zombies_killed = False
-        for ep in enrty_points:
+        for ep in self.entry_points:
             if ep.rapid_spawn_queue:
                 barricaded_zombies_killed = False
                 return

@@ -1,6 +1,5 @@
 import pygame
 from ..entities.base_entity import BaseEntity
-from ..entities.weapon import LongRangeWeapon
 
 
 class Player(BaseEntity):
@@ -8,8 +7,9 @@ class Player(BaseEntity):
         super().__init__(x, y, width, height)
         self.speed = speed
         self.hp = hp
-        self.weapon = LongRangeWeapon()
+        self.weapon = None
         self.amount_of_barricades = 0
+        self.ammo = 200
     
     def render(self, screen: pygame.surface, color: tuple, rect: pygame.Rect):
         pygame.draw.rect(screen, color, rect)

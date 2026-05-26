@@ -8,6 +8,7 @@ class InputState:
         self.buying_barricade = False
         self.buying_ammo = False
         self.buying_medkit = False
+        self.reloading_weapon = False
 
 class InputSystem:
 
@@ -33,6 +34,11 @@ class InputSystem:
             input_state.buying_barricade = True
         else:
             input_state.buying_barricade = False
+        if keys[pygame.K_r]:
+            input_state.reloading_weapon = True
+        else:
+            input_state.reloading_weapon = False
+        
         
         InputSystem.last_keys = keys
 

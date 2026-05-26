@@ -1,0 +1,30 @@
+{
+    "pistol": {
+        "type": "ranged",
+        "damage": 25,
+        "fire_rate": 0.3,
+        "mag_size": 12,
+        "reload_time": 2,
+        "bullet_speed": 700,
+        "spread": 0,
+        "range": 1000,
+        "pellets": 1
+    },
+    "shotgun": {
+        "type": "ranged",
+        "damage": 10,
+        "fire_rate": 0.8,
+        "mag_size": 6,
+        "reload_time": 4,
+        "bullet_speed": 700,
+        "spread": 15,
+        "range": 500,
+        "pellets": 6
+    },
+    "bat": {
+        "type": "melee",
+        "damage": 40,
+        "fire_rate": 1,
+        "range": 80
+    }
+}
