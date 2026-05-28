@@ -14,6 +14,11 @@ class DamageSystem:
                 economy_manager.credits += target.reward
                 print(f"DEBUG Player got {target.reward} credits")
             
-
+    def zombie_damage_dealer(self, target, damage):
+        target.hp -= damage
+        
+        if target.hp <= 0:
+            self.kill_entity(target)
+    
     def kill_entity(self, entity):
         entity.is_alive = False

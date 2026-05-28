@@ -1,14 +1,15 @@
 import pygame
 from .player import Player
+from .zombie import Zombie
 from ..systems.combat_system import CombatSystem
 
 
 class Weapon:
-    def __init__(self, data: dict, owner: Player, combat_system: CombatSystem,):
+    def __init__(self, data: dict, combat_system: CombatSystem,):
         self.damage = data["damage"]
         self.cooldown = 0
         self.attack_rate = data["fire_rate"]
-        self.owner = owner
+        self.owner = None
         self.combat_system = combat_system
 
     def update(self, dt):
@@ -19,20 +20,23 @@ class Weapon:
         return self.cooldown <= 0
 
 class Melee(Weapon):
-    def __init__(self, data: dict, owner: Player, combat_system: CombatSystem):
-        super().__init__(data, owner, combat_system)
+    def __init__(self, data: dict, combat_system: CombatSystem):
+        super().__init__(data, combat_system)
         self.range = data["range"]
 
     def shoot(self):
         if self.can_shoot():
-            self.combat_system.process_melee_attack(self.range, self.damage)
-            self.cooldown = self.attack_rate
-
+            if isinstance(self.owner, Player):
+                self.combat_system.process_melee_attack(self.range, self.damage)
+                self.cooldown = self.attack_rate
+            elif isinstance(self.owner, Zombie):
+                self.combat_system.process_zombie_melee_attack(self.damage)
+                self.cooldown = self.attack_rate
     
 class Ranged(Weapon):
-    def __init__(self, data: dict, owner: Player, combat_system: CombatSystem):
+    def __init__(self, data: dict, combat_system: CombatSystem):
         
-        super().__init__(data, owner, combat_system)
+        super().__init__(data, combat_system)
         self.mag_size = data["mag_size"]
         self.current_ammo = data["mag_size"]
         self.reload_time = data["reload_time"]
@@ -53,9 +57,10 @@ class Ranged(Weapon):
                 print("DEBUG Weapon Reloaded")
     
     def can_shoot(self):
-        if self.cooldown <=0 and self.current_ammo > 0:
+        if self.cooldown <= 0 and self.current_ammo > 0:
             return True
         else:
+            print("DEBUG Weapon can't shoot, no ammo or on cooldown")
             return False
 
     def shoot(self):

@@ -9,6 +9,7 @@ class Zombie(BaseEntity):
         self.speed = ZOMBIE_SPEED
         self.hp = ZOMBIE_HEALTH
         self.reward = 10
+        self.weapon = None
 
     def render(self, screen):
         pygame.draw.rect(screen, ZOMBIE_GREEN, self.rect)

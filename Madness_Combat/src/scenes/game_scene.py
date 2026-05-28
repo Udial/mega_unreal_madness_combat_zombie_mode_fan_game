@@ -49,19 +49,21 @@ class GameScene(BaseScene):
         self.entry_points = [self.window_entry]
         self.barricade_list = []
         
+
         self.economy_manager = EconomyManager()
+        self.damage_system = DamageSystem()
+        self.combat_system = CombatSystem(self.player, self.economy_manager, self.damage_system, self.zombie_list, self.projectile_list)
+        self.weapon_factory = WeaponFactory(self.combat_system)
         self.shop_manager = ShopManager(self.economy_manager, self.player)
         self.collision_system = CollisionSystem()
         self.input_system = InputSystem()
         self.movement_system = MovementSystem(self.collision_system)
-        self.spawn_manager = SpawnManager(self.entry_points, self.zombie_list)
+        self.spawn_manager = SpawnManager(self.entry_points, self.zombie_list, self.weapon_factory)
         self.wave_manager = WaveManager(self.spawn_manager, self.zombie_list, self.entry_points)
         self.ai_system = AISystem(self.movement_system, self.player)
-        self.damage_system = DamageSystem()
-        self.combat_system = CombatSystem(self.player, self.economy_manager, self.damage_system, self.zombie_list, self.projectile_list)
-        self.weapon_factory = WeaponFactory(self.combat_system, self.player)
 
-        self.player.weapon = self.weapon_factory.create_weapon("pistol")
+        players_weapon = self.weapon_factory.create_weapon("pistol")
+        self.weapon_factory.assign_weapon(players_weapon, self.player)
         
 
     def handle_event(self, event):
@@ -73,6 +75,9 @@ class GameScene(BaseScene):
 
 
     def update(self, dt):
+
+        print(f"DEBUG Player health: {self.player.hp}")
+
         self.wave_manager.update(dt)
 
         if self.player.weapon != None:
@@ -82,6 +87,7 @@ class GameScene(BaseScene):
 
         if isinstance(self.player.weapon, Melee):
             self.player.weapon.update(dt)
+        
         elif isinstance(self.player.weapon, Ranged):
             self.player.weapon.update_ranged(dt)
         
@@ -105,6 +111,9 @@ class GameScene(BaseScene):
         #self.combat_system.process_bullets(input_state)
 
         zombies = [e for e in self.zombie_list if isinstance(e, Zombie)]
+
+        for zombie in zombies:
+            zombie.weapon.update(dt)
         
         projectiles = [e for e in self.projectile_list if isinstance(e, Bullet)]
 

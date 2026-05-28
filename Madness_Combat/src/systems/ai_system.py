@@ -1,17 +1,21 @@
 import pygame 
 from ..entities.player import Player
-
+from ..entities.zombie import Zombie
+from .combat_system import CombatSystem
 
 class AISystem:
     def __init__(self, movement_system, player: Player):
         self.movement_system = movement_system
         self.player = player
     
-    def update(self, zombies: list, dt):
+    def update(self, zombies: list[Zombie], dt):
         for zombie in zombies:
-            input_state = self._build_input(zombie)
-            self.movement_system.update(zombie, input_state, dt)
-    
+            if zombie.get_distance_to(self.player) > zombie.weapon.range:
+                input_state = self._build_input(zombie)
+                self.movement_system.update(zombie, input_state, dt)
+            else:
+                zombie.weapon.shoot()
+
     def _build_input(self, zombie):
         direction = pygame.Vector2(
             self.player.pos_x - zombie.pos_x,

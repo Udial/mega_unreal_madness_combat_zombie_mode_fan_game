@@ -16,6 +16,10 @@ class CombatSystem:
         self.zombie_list = zombie_list
         self.proj_list = proj_list
 
+    #---
+    #player combat methods
+    #---
+
     def attack(self, input_state: InputState):
         if input_state.shoot and self.player.weapon.can_shoot():
             self.player.weapon.shoot()
@@ -72,3 +76,10 @@ class CombatSystem:
                 self.damage_system.apply_damage(zombie, damage, self.economy_manager)
         
         print("DEBUG Attacking using melee")
+
+    #---
+    #zombie attack methods
+    #---
+
+    def process_zombie_melee_attack(self, damage):
+        self.damage_system.zombie_damage_dealer(self.player, damage)

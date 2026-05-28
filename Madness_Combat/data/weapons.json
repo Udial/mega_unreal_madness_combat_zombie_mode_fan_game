@@ -26,5 +26,12 @@
         "damage": 40,
         "fire_rate": 1,
         "range": 80
+    },
+    "zombie_fists": {
+        "type": "melee",
+        "damage": 10,
+        "fire_rate": 3,
+        "range": 60
     }
+
 }
