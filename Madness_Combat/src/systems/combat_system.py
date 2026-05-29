@@ -1,4 +1,5 @@
 import pygame
+from random import uniform
 from ..entities.bullet import Bullet
 from ..entities.player import Player
 from .economy_manager import EconomyManager
@@ -24,31 +25,34 @@ class CombatSystem:
         if input_state.shoot and self.player.weapon.can_shoot():
             self.player.weapon.shoot()
 
-    def spawn_bullet(self, damage: int):
+    def spawn_bullet(self, damage: int, spread: int, speed: int):
 
-        direction = self.get_direction()
+        direction = self.player.get_direction()
+        angle = uniform(-spread, spread)
+        pellet_direction = direction.rotate(angle)
 
         bullet = Bullet(
             self.player.rect.centerx,
             self.player.rect.centery,
-            direction,
-            damage
+            pellet_direction,
+            damage,
+            speed
         )
 
         self.proj_list.append(bullet)
 
-    def get_direction(self):
-        mos_pos = pygame.mouse.get_pos()
+    #def get_direction(self):
+        #mos_pos = pygame.mouse.get_pos()
 
-        direction = pygame.Vector2(
-            mos_pos[0] - self.player.rect.centerx,
-            mos_pos[1] - self.player.rect.centery
-            )
+        #direction = pygame.Vector2(
+            #mos_pos[0] - self.player.rect.centerx,
+            #mos_pos[1] - self.player.rect.centery
+            #)
         
-        if direction.length() > 0:
-            direction = direction.normalize()
+        #if direction.length() > 0:
+            #direction = direction.normalize()
 
-        return direction
+        #return direction
     
     def process_bullets(self):
         for bullet in self.proj_list:
@@ -58,7 +62,7 @@ class CombatSystem:
                     bullet.is_alive = False
 
     def process_melee_attack(self, range: int, damage:int):
-        dirrection = -self.get_direction()
+        dirrection = -self.player.get_direction()
 
         player_center = pygame.Vector2(self.player.rect.center)
         offset_disstance = range
@@ -78,7 +82,7 @@ class CombatSystem:
         print("DEBUG Attacking using melee")
 
     #---
-    #zombie attack methods
+    #zombie combat methods
     #---
 
     def process_zombie_melee_attack(self, damage):

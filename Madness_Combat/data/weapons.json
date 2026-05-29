@@ -1,14 +1,18 @@
 {
     "pistol": {
         "type": "ranged",
-        "damage": 25,
+        "damage": 15,
         "fire_rate": 0.3,
         "mag_size": 12,
         "reload_time": 2,
         "bullet_speed": 700,
         "spread": 0,
         "range": 1000,
-        "pellets": 1
+        "pellets": 1,
+        "sprite": "Madness_Combat/assets/sprites/P1445.png",
+        "sprite_width": 60,
+        "sprite_height": 30,
+        "offset": 20
     },
     "shotgun": {
         "type": "ranged",
@@ -16,22 +20,63 @@
         "fire_rate": 0.8,
         "mag_size": 6,
         "reload_time": 4,
-        "bullet_speed": 700,
-        "spread": 15,
+        "bullet_speed": 900,
+        "spread": 10,
         "range": 500,
-        "pellets": 6
+        "pellets": 6,
+        "sprite": "Madness_Combat/assets/sprites/Benelli.png",
+        "sprite_width": 140,
+        "sprite_height": 40,
+        "offset": 40
     },
     "bat": {
         "type": "melee",
         "damage": 40,
         "fire_rate": 1,
-        "range": 80
+        "range": 80,
+        "sprite": "Madness_Combat/assets/sprites/Bat.png",
+        "sprite_width": 140,
+        "sprite_height": 20,
+        "offset": 50
     },
     "zombie_fists": {
         "type": "melee",
         "damage": 10,
         "fire_rate": 3,
-        "range": 60
+        "range": 60,
+        "sprite": "Madness_Combat/assets/sprites/fist.png",
+        "sprite_width": 20,
+        "sprite_height": 20,
+        "offset": 20
+    },
+    "M16": {
+        "type": "ranged",
+        "damage": 25,
+        "fire_rate": 0.2,
+        "mag_size": 30,
+        "reload_time": 3,
+        "bullet_speed": 700,
+        "spread": 0,
+        "range": 1000,
+        "pellets": 1,
+        "sprite": "Madness_Combat/assets/sprites/M16.png",
+        "sprite_width": 160,
+        "sprite_height": 50,
+        "offset": 40
+    },
+    "minigun": {
+        "type": "ranged",
+        "damage": 10,
+        "fire_rate": 0.01,
+        "mag_size": 200,
+        "reload_time": 8,
+        "bullet_speed": 700,
+        "spread": 10,
+        "range": 1000,
+        "pellets": 1,
+        "sprite": "Madness_Combat/assets/sprites/minigun.png",
+        "sprite_width": 160,
+        "sprite_height": 50,
+        "offset": 40
     }
-
 }

@@ -3,11 +3,11 @@ from .base_entity import BaseEntity
 from ...settings import BULLET_YELLOW
 
 class Bullet(BaseEntity):
-    def __init__(self, x, y, direction, damage):
+    def __init__(self, x, y, direction, damage, speed):
         super().__init__(x, y, 10, 5)
         
         self.direction = direction
-        self.speed = 600
+        self.speed = speed
         self.damage = damage
     
     def update(self, dt):

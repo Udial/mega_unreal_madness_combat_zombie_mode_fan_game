@@ -62,7 +62,7 @@ class GameScene(BaseScene):
         self.wave_manager = WaveManager(self.spawn_manager, self.zombie_list, self.entry_points)
         self.ai_system = AISystem(self.movement_system, self.player)
 
-        players_weapon = self.weapon_factory.create_weapon("pistol")
+        players_weapon = self.weapon_factory.create_weapon("shotgun")
         self.weapon_factory.assign_weapon(players_weapon, self.player)
         
 
@@ -75,8 +75,6 @@ class GameScene(BaseScene):
 
 
     def update(self, dt):
-
-        print(f"DEBUG Player health: {self.player.hp}")
 
         self.wave_manager.update(dt)
 
@@ -94,7 +92,6 @@ class GameScene(BaseScene):
         if isinstance(self.player.weapon, Ranged):
             self.player.weapon.start_reload(input_state)
 
-
         self.shop_manager.buy(input_state)
 
         self.combat_system.attack(input_state)
@@ -108,11 +105,10 @@ class GameScene(BaseScene):
         for ep in self.entry_points:
             ep.update(self.player, self.collision_system, input_state, self.damage_system, dt)
 
-        #self.combat_system.process_bullets(input_state)
-
         zombies = [e for e in self.zombie_list if isinstance(e, Zombie)]
 
         for zombie in zombies:
+            zombie.update_direction(self.player)
             zombie.weapon.update(dt)
         
         projectiles = [e for e in self.projectile_list if isinstance(e, Bullet)]
@@ -146,12 +142,14 @@ class GameScene(BaseScene):
             if ep.barricade != None:
                 ep.barricade.render(screen)
 
-        for entity in self.zombie_list:
-            entity.render(screen)
+        for zombie in self.zombie_list:
+            zombie.render(screen)
+            zombie.weapon.render(screen)
 
         self.exit_button.render(screen)
 
         self.player.render(screen, settings.WHITE, self.player.rect)
+        self.player.weapon.render(screen)
 
         for proj in self.projectile_list:
             proj.render(screen)
