@@ -1,5 +1,4 @@
-import pygame
-from ...settings import ZOMBIE_SPAWN_TIMER, ZOMBIE_SPAWN_DELAY, ZOMBIE_RAPID_SPAWN_DELAY, ZOMBIE_RAPID_SPAWN_TIMER
+from ...settings import HITBOX_HEIGHT, HITBOX_WIDTH
 from ..entities.zombie import Zombie
 from .weapon_factory import WeaponFactory
 import random
@@ -17,7 +16,9 @@ class SpawnManager:
         else:
             entry = self.entry_points[entry_index]
         
-        x, y = entry.get_spawn_point()
+        spawn_x, spawn_y = entry.get_spawn_point()
+        x = spawn_x - HITBOX_WIDTH // 2
+        y = spawn_y - HITBOX_HEIGHT // 2
         if entry.is_open():
             if type == "normal":
                 weapon = self.weapon_factory.create_weapon("zombie_fists")

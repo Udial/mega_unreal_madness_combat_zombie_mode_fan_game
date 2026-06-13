@@ -11,12 +11,15 @@ class InputState:
         self.reloading_weapon = False
 
 class InputSystem:
-
-    last_keys = None
+    def __init__(self):
+        self.last_keys = None
 
     def get_input(self) -> object:
         input_state = InputState()
         keys = pygame.key.get_pressed()
+
+        if self.last_keys == None:
+            self.last_keys = keys
 
         if keys[pygame.K_w]:
             input_state.move.y = -1

@@ -12,6 +12,7 @@ class Weapon:
         self.attack_rate = data["fire_rate"]
         self.owner = None
         self.combat_system = combat_system
+        self.name = data["name"]
 
         self.sprite_path = data["sprite"]
         self.sprite_widht = data["sprite_width"]
@@ -25,7 +26,6 @@ class Weapon:
         self.angle = 0
 
     def update(self, dt):
-        #if isinstance(self.owner, Player):
         direction = self.owner.get_direction()
         self.angle = -math.degrees(math.atan2(direction.y, direction.x))
         sprite = self.original_sprite
@@ -109,8 +109,8 @@ class Ranged(Weapon):
             print("DEBUG Started reloading")
 
     def finish_reload(self):        
-        leftover_ammo = self.current_ammo
-        self.owner.ammo += leftover_ammo
-        self.owner.ammo -= self.mag_size
-        self.current_ammo = self.mag_size
+        need = self.mag_size - self.current_ammo
+        take = min(need, self.owner.ammo)
+        self.current_ammo += take
+        self.owner.ammo -= take
         self.reloading = False

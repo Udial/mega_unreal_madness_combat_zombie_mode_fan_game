@@ -1,6 +1,7 @@
 {
     "pistol": {
         "type": "ranged",
+        "name": "P1445",
         "damage": 15,
         "fire_rate": 0.3,
         "mag_size": 12,
@@ -16,6 +17,7 @@
     },
     "shotgun": {
         "type": "ranged",
+        "name": "Benelli",
         "damage": 10,
         "fire_rate": 0.8,
         "mag_size": 6,
@@ -31,6 +33,7 @@
     },
     "bat": {
         "type": "melee",
+        "name": "Bat",
         "damage": 40,
         "fire_rate": 1,
         "range": 80,
@@ -41,6 +44,7 @@
     },
     "zombie_fists": {
         "type": "melee",
+        "name": "Zombie fist",
         "damage": 10,
         "fire_rate": 3,
         "range": 60,
@@ -51,6 +55,7 @@
     },
     "M16": {
         "type": "ranged",
+        "name": "M16A3",
         "damage": 25,
         "fire_rate": 0.2,
         "mag_size": 30,
@@ -66,6 +71,7 @@
     },
     "minigun": {
         "type": "ranged",
+        "name": "Minigun",
         "damage": 10,
         "fire_rate": 0.01,
         "mag_size": 200,

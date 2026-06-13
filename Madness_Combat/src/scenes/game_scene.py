@@ -19,6 +19,9 @@ from ..systems.damage_system import DamageSystem
 from ..systems.economy_manager import EconomyManager
 from ..systems.shop_manager import ShopManager
 from ..systems.weapon_factory import WeaponFactory
+from ..ui.hud import HUD
+
+from ..utils.geometry import make_wall_entry
 
 class GameScene(BaseScene):
     def __init__(self, game):
@@ -34,8 +37,28 @@ class GameScene(BaseScene):
                             )
         
         self.window_entry = EntryPoint(settings.ENTRY_POINTS_TUPLE[0], 'window', 0)
-        #self.left_door_entry = EntryPoint(settings.ENTRY_POINTS_TUPLE[1], 'door')
-        #self.right_door_entry = EntryPoint(settings.ENTRY_POINTS_TUPLE[2], 'door')
+
+        left_door_points = make_wall_entry(
+            settings.WALL_CORDS_TUPLE[0],
+            u1 = 0.4,
+            u2 = 0.6,
+            v_top = 0.8,
+            v_bottom = 1
+        )
+        right_door_ponts = make_wall_entry(
+            settings.WALL_CORDS_TUPLE[1],
+            u1 = 0.4,
+            u2 = 0.6,
+            v_top = 0.8,
+            v_bottom = 1
+        )
+
+        self.left_door_entry = EntryPoint(
+            left_door_points, "door", 1
+        )
+        self.right_door_entry = EntryPoint(
+            right_door_ponts, "door", 2
+        )
 
         self.left_wall = Wall(settings.WALL_CORDS_TUPLE[0], False)
         self.right_wall = Wall(settings.WALL_CORDS_TUPLE[1], False)
@@ -46,12 +69,12 @@ class GameScene(BaseScene):
         self.player = Player(800, 900, 50, 100, 500, 100)
         self.zombie_list = []
         self.projectile_list = []
-        self.entry_points = [self.window_entry]
+        self.entry_points = [self.window_entry, self.left_door_entry, self.right_door_entry]
         self.barricade_list = []
         
 
         self.economy_manager = EconomyManager()
-        self.damage_system = DamageSystem()
+        self.damage_system = DamageSystem(self.economy_manager)
         self.combat_system = CombatSystem(self.player, self.economy_manager, self.damage_system, self.zombie_list, self.projectile_list)
         self.weapon_factory = WeaponFactory(self.combat_system)
         self.shop_manager = ShopManager(self.economy_manager, self.player)
@@ -61,8 +84,9 @@ class GameScene(BaseScene):
         self.spawn_manager = SpawnManager(self.entry_points, self.zombie_list, self.weapon_factory)
         self.wave_manager = WaveManager(self.spawn_manager, self.zombie_list, self.entry_points)
         self.ai_system = AISystem(self.movement_system, self.player)
+        self.hud = HUD(self.player, self.economy_manager, self.wave_manager)
 
-        players_weapon = self.weapon_factory.create_weapon("shotgun")
+        players_weapon = self.weapon_factory.create_weapon("minigun")
         self.weapon_factory.assign_weapon(players_weapon, self.player)
         
 
@@ -78,19 +102,16 @@ class GameScene(BaseScene):
 
         self.wave_manager.update(dt)
 
-        if self.player.weapon != None:
-            self.player.weapon.update(dt)
+        if isinstance(self.player.weapon, Melee):
+            self.player.weapon.update(dt)    
+              
+        if isinstance(self.player.weapon, Ranged):
+            self.player.weapon.update_ranged(dt)         
        
         input_state = self.input_system.get_input()
 
-        if isinstance(self.player.weapon, Melee):
-            self.player.weapon.update(dt)
-        
-        elif isinstance(self.player.weapon, Ranged):
-            self.player.weapon.update_ranged(dt)
-        
         if isinstance(self.player.weapon, Ranged):
-            self.player.weapon.start_reload(input_state)
+            self.player.weapon.start_reload(input_state)      
 
         self.shop_manager.buy(input_state)
 
@@ -153,3 +174,5 @@ class GameScene(BaseScene):
 
         for proj in self.projectile_list:
             proj.render(screen)
+
+        self.hud.render(screen)

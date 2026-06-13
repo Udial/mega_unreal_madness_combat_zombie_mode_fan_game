@@ -40,25 +40,12 @@ class CombatSystem:
         )
 
         self.proj_list.append(bullet)
-
-    #def get_direction(self):
-        #mos_pos = pygame.mouse.get_pos()
-
-        #direction = pygame.Vector2(
-            #mos_pos[0] - self.player.rect.centerx,
-            #mos_pos[1] - self.player.rect.centery
-            #)
-        
-        #if direction.length() > 0:
-            #direction = direction.normalize()
-
-        #return direction
     
     def process_bullets(self):
         for bullet in self.proj_list:
             for zombie in self.zombie_list:
                 if bullet.rect.colliderect(zombie.rect):
-                    self.damage_system.apply_damage(zombie, bullet.damage, self.economy_manager)
+                    self.damage_system.apply_damage(zombie, bullet.damage)
                     bullet.is_alive = False
 
     def process_melee_attack(self, range: int, damage:int):
@@ -86,4 +73,4 @@ class CombatSystem:
     #---
 
     def process_zombie_melee_attack(self, damage):
-        self.damage_system.zombie_damage_dealer(self.player, damage)
+        self.damage_system.apply_damage(self.player, damage)
