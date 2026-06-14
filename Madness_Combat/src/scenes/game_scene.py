@@ -1,5 +1,6 @@
 import pygame
 from ..core.base_scene import BaseScene
+from ..core.camera import Camera
 from ... import settings
 from ..ui.button import Button
 from ..entities.player import Player
@@ -27,6 +28,12 @@ class GameScene(BaseScene):
     def __init__(self, game):
         super().__init__(game)
 
+        self.camera = Camera(
+            settings.CAMERA_SCREEN_WIDTH,
+            settings.SCREEN_WIDTH,
+            settings.MAX_CAMERA_X
+        )
+
         self.title_font = pygame.font.SysFont(None, 72)
         self.exit_button = Button(settings.BASE_BUTTON_WIDTH, 
                             settings.BASE_BUTTON_HEIGHT, 
@@ -36,7 +43,11 @@ class GameScene(BaseScene):
                             True,
                             )
         
-        self.window_entry = EntryPoint(settings.ENTRY_POINTS_TUPLE[0], 'window', 0)
+        self.window_entry = EntryPoint(
+            settings.ENTRY_POINTS_TUPLE[0],
+            'window',
+            0
+        )
 
         left_door_points = make_wall_entry(
             settings.WALL_CORDS_TUPLE[0],
@@ -65,28 +76,68 @@ class GameScene(BaseScene):
         self.back_wall = Wall(settings.WALL_CORDS_TUPLE[2], False)
         self.roof = Wall(settings.WALL_CORDS_TUPLE[3], False)
 
-        self.walls = [self.left_wall, self.right_wall, self.back_wall, self.roof]
+        self.walls = [
+            self.left_wall,
+            self.right_wall,
+            self.back_wall,
+            self.roof
+        ]
         self.player = Player(800, 900, 50, 100, 500, 100)
         self.zombie_list = []
         self.projectile_list = []
-        self.entry_points = [self.window_entry, self.left_door_entry, self.right_door_entry]
+        self.entry_points = [
+            self.window_entry,
+            self.left_door_entry,
+            self.right_door_entry
+        ]
         self.barricade_list = []
         
 
         self.economy_manager = EconomyManager()
-        self.damage_system = DamageSystem(self.economy_manager)
-        self.combat_system = CombatSystem(self.player, self.economy_manager, self.damage_system, self.zombie_list, self.projectile_list)
-        self.weapon_factory = WeaponFactory(self.combat_system)
-        self.shop_manager = ShopManager(self.economy_manager, self.player)
+        self.damage_system = DamageSystem(
+            self.economy_manager
+        )
+        self.combat_system = CombatSystem(
+            self.player,
+            self.economy_manager,
+            self.damage_system,
+            self.zombie_list,
+            self.projectile_list,
+            self.camera
+        )
+        self.weapon_factory = WeaponFactory(
+            self.combat_system
+        )
+        self.shop_manager = ShopManager(
+            self.economy_manager,
+            self.player
+        )
         self.collision_system = CollisionSystem()
         self.input_system = InputSystem()
-        self.movement_system = MovementSystem(self.collision_system)
-        self.spawn_manager = SpawnManager(self.entry_points, self.zombie_list, self.weapon_factory)
-        self.wave_manager = WaveManager(self.spawn_manager, self.zombie_list, self.entry_points)
-        self.ai_system = AISystem(self.movement_system, self.player)
-        self.hud = HUD(self.player, self.economy_manager, self.wave_manager)
+        self.movement_system = MovementSystem(
+            self.collision_system
+        )
+        self.spawn_manager = SpawnManager(
+            self.entry_points,
+            self.zombie_list,
+            self.weapon_factory
+        )
+        self.wave_manager = WaveManager(
+            self.spawn_manager,
+            self.zombie_list,
+            self.entry_points
+        )
+        self.ai_system = AISystem(
+            self.movement_system,
+            self.player
+        )
+        self.hud = HUD(
+            self.player,
+            self.economy_manager,
+            self.wave_manager
+        )
 
-        players_weapon = self.weapon_factory.create_weapon("minigun")
+        players_weapon = self.weapon_factory.create_weapon("M16")
         self.weapon_factory.assign_weapon(players_weapon, self.player)
         
 
@@ -103,28 +154,47 @@ class GameScene(BaseScene):
         self.wave_manager.update(dt)
 
         if isinstance(self.player.weapon, Melee):
-            self.player.weapon.update(dt)    
+            self.player.weapon.update(dt, self.camera)    
               
         if isinstance(self.player.weapon, Ranged):
-            self.player.weapon.update_ranged(dt)         
+            self.player.weapon.update_ranged(dt, self.camera)         
        
         input_state = self.input_system.get_input()
 
         if isinstance(self.player.weapon, Ranged):
-            self.player.weapon.start_reload(input_state)      
+            self.player.weapon.start_reload(
+                input_state
+            )      
 
-        self.shop_manager.buy(input_state)
+        self.shop_manager.buy(
+            input_state
+        )
 
-        self.combat_system.attack(input_state)
+        self.combat_system.attack(
+            input_state
+        )
 
-        self.movement_system.update(self.player, input_state, dt)
+        self.movement_system.update(
+            self.player,
+            input_state,
+            dt
+        )
+
+        self.camera.update(self.player)
 
         if self.player.weapon != None:
             if self.player.weapon == Ranged:
-                self.player.weapon.start_reload(input_state)
+                self.player.weapon.start_reload(
+                    input_state
+                )
 
         for ep in self.entry_points:
-            ep.update(self.player, self.collision_system, input_state, self.damage_system, dt)
+            ep.update(
+                self.player,
+                self.collision_system,
+                input_state, self.damage_system,
+                dt
+            )
 
         zombies = [e for e in self.zombie_list if isinstance(e, Zombie)]
 
@@ -154,25 +224,25 @@ class GameScene(BaseScene):
 
         
         for wall in self.walls:
-            wall.render(screen, settings.DARK_GRAY)
+            wall.render(screen, settings.DARK_GRAY, self.camera)
 
         for ep in self.entry_points:
-            ep.render(screen, settings.SLIGHTLY_BRIGHTER_DARK_GRAY)
+            ep.render(screen, settings.SLIGHTLY_BRIGHTER_DARK_GRAY, self.camera)
         
         for ep in self.entry_points:
             if ep.barricade != None:
-                ep.barricade.render(screen)
+                ep.barricade.render(screen, self.camera)
 
         for zombie in self.zombie_list:
-            zombie.render(screen)
-            zombie.weapon.render(screen)
+            zombie.render(screen, self.camera)
+            zombie.weapon.render(screen, self.camera)
 
         self.exit_button.render(screen)
 
-        self.player.render(screen, settings.WHITE, self.player.rect)
-        self.player.weapon.render(screen)
+        self.player.render(screen, settings.WHITE, self.camera)
+        self.player.weapon.render(screen, self.camera)
 
         for proj in self.projectile_list:
-            proj.render(screen)
+            proj.render(screen, self.camera)
 
         self.hud.render(screen)

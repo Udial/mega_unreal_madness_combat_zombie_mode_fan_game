@@ -10,12 +10,13 @@ from .input_system import InputState
 
 
 class CombatSystem:
-    def __init__(self, player: Player, economy_manager: EconomyManager, damage_system: DamageSystem, zombie_list: list[Zombie], proj_list: list[Bullet]):
+    def __init__(self, player: Player, economy_manager: EconomyManager, damage_system: DamageSystem, zombie_list: list[Zombie], proj_list: list[Bullet], camera=None):
         self.player = player
         self.economy_manager = economy_manager
         self.damage_system = damage_system
         self.zombie_list = zombie_list
         self.proj_list = proj_list
+        self.camera = camera
 
     #---
     #player combat methods
@@ -27,7 +28,7 @@ class CombatSystem:
 
     def spawn_bullet(self, damage: int, spread: int, speed: int):
 
-        direction = self.player.get_direction()
+        direction = self.player.get_direction(self.camera)
         angle = uniform(-spread, spread)
         pellet_direction = direction.rotate(angle)
 

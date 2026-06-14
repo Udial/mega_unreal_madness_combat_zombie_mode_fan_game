@@ -15,5 +15,9 @@ class Bullet(BaseEntity):
         self.pos_y +=  self.direction.y * self.speed * dt
         self.update_rect()
 
-    def render(self, screen):
-        pygame.draw.rect(screen, BULLET_YELLOW, self.rect)
+    def render(self, screen, camera=None):
+        rect = self.rect
+        if camera is not None:
+            rect = camera.apply(self.rect)
+
+        pygame.draw.rect(screen, BULLET_YELLOW, rect)

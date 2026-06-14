@@ -26,5 +26,9 @@ class Zombie(BaseEntity):
     def get_direction(self):
         return self.look_direction
 
-    def render(self, screen):
-        pygame.draw.rect(screen, ZOMBIE_GREEN, self.rect)
+    def render(self, screen, camera=None):
+        rect = self.rect
+        if camera is not None:
+            rect = camera.apply(self.rect)
+
+        pygame.draw.rect(screen, ZOMBIE_GREEN, rect)

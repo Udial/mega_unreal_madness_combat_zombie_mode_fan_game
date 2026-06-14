@@ -25,8 +25,12 @@ class Weapon:
         self.offset = pygame.Vector2(self.offset_from_center, 0)
         self.angle = 0
 
-    def update(self, dt):
-        direction = self.owner.get_direction()
+    def update(self, dt, camera=None):
+        if isinstance(self.owner, Player):
+            direction = self.owner.get_direction(camera)
+        else:
+            direction = self.owner.get_direction()
+            
         self.angle = -math.degrees(math.atan2(direction.y, direction.x))
         sprite = self.original_sprite
 
@@ -47,8 +51,13 @@ class Weapon:
     def can_shoot(self):
         return self.cooldown <= 0
     
-    def render(self, screen):
-        screen.blit(self.sprite, self.rect)
+    def render(self, screen, camera=None):
+        rect = self.rect
+
+        if camera is not None:
+            rect = camera.apply(self.rect)
+
+        screen.blit(self.sprite, rect)
 
 class Melee(Weapon):
     def __init__(self, data: dict, combat_system: CombatSystem):
@@ -77,8 +86,8 @@ class Ranged(Weapon):
         self.reloading = False
         self.reload_timer = 0
     
-    def update_ranged(self, dt):
-        super().update(dt)
+    def update_ranged(self, dt, camera=None):
+        super().update(dt, camera)
         
         if self.reloading:
             self.reload_timer -= dt

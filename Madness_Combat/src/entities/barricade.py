@@ -4,7 +4,7 @@ from ...settings import WOOD_COLOR, GREEN
 
 class Barricade(BaseEntity):
     def __init__(self, entry_point):
-        x, y = entry_point.x_topleft, entry_point.y_topleft
+        x, y = entry_point.points[0]
         width, height = entry_point.width, 50
 
         super().__init__(x, y, width, height)
@@ -14,13 +14,10 @@ class Barricade(BaseEntity):
         self.entry_point = entry_point
 
 
-    def render(self, screen):
-        pygame.draw.rect(screen, WOOD_COLOR, self.rect)
+    def render(self, screen, camera=None):
+        rect = self.rect
+        if camera is not None:
+            rect = camera.apply(self.rect)
+        pygame.draw.rect(screen, WOOD_COLOR, rect)
 
-        health_bar_width = self.rect.width
-        health_bar_height = 6
-
-        health_ratio = self.hp / self.max_hp
-
-        health_rect = pygame.Rect(self.pos_x, self.pos_y - 10, health_bar_width, health_bar_height)
-        pygame.draw.rect(screen, GREEN, health_rect)
+        

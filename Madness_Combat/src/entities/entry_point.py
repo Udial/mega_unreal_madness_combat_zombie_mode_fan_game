@@ -131,6 +131,11 @@ class EntryPoint(BaseEntity):
     def get_spawn_point(self):
         return self.spawn_point
     
-    def render(self, screen, color):
-        pygame.draw.polygon(screen, color, self.points, 0)
-        pygame.draw.polygon(screen, BLACK, self.points, 2)
+    def render(self, screen, color, camera=None):
+        points = self.points
+        
+        if camera is not None:
+            points = camera.apply_points(self.points)
+
+        pygame.draw.polygon(screen, color, points, 0)
+        pygame.draw.polygon(screen, BLACK, points, 2)

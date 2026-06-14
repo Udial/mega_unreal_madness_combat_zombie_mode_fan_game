@@ -11,9 +11,12 @@ class Player(BaseEntity):
         self.amount_of_barricades = 0
         self.ammo = 200
 
-    def get_direction(self):
+    def get_direction(self, camera=None):
         mos_pos = pygame.mouse.get_pos()
 
+        if camera is not None:
+            mos_pos = camera.screen_to_world(mos_pos)
+            
         direction = pygame.Vector2(
             mos_pos[0] - self.rect.centerx,
             mos_pos[1] - self.rect.centery
@@ -24,5 +27,10 @@ class Player(BaseEntity):
 
         return direction
     
-    def render(self, screen: pygame.surface, color: tuple, rect: pygame.Rect):
+    def render(self, screen: pygame.surface, color: tuple, camera=None):
+        rect = self.rect
+
+        if camera is not None:
+            rect = camera.apply(self.rect)
+
         pygame.draw.rect(screen, color, rect)
