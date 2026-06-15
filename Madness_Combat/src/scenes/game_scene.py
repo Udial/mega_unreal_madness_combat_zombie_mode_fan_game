@@ -151,15 +151,18 @@ class GameScene(BaseScene):
 
     def update(self, dt):
 
-        self.wave_manager.update(dt)
+        input_state = self.input_system.get_input()
+
+        self.wave_manager.update(
+            dt,
+            input_state
+        )
 
         if isinstance(self.player.weapon, Melee):
             self.player.weapon.update(dt, self.camera)    
               
         if isinstance(self.player.weapon, Ranged):
             self.player.weapon.update_ranged(dt, self.camera)         
-       
-        input_state = self.input_system.get_input()
 
         if isinstance(self.player.weapon, Ranged):
             self.player.weapon.start_reload(

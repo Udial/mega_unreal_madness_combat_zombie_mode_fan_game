@@ -1,5 +1,5 @@
 import json
-import pygame
+from .input_system import InputState
 from .spawn_manager import SpawnManager
 from ..entities.entry_point import EntryPoint
 from ...settings import ZOMBIE_RAPID_SPAWN_DELAY
@@ -23,8 +23,8 @@ class WaveManager:
         self.rapid_spawn_delay = ZOMBIE_RAPID_SPAWN_DELAY
 
         self.is_in_break = False
-        self.break_timer = 0
-        self.break_duration = 5
+        self.tab_hold_duration = 0
+        self.wave_start_timer = 3
 
         self.curent_spawn_delay = 1
 
@@ -51,14 +51,17 @@ class WaveManager:
         print(f"DEBUG wave {self.curent_wave_index + 1} started")
 
 
-    def update(self, dt):
+    def update(self, dt, input_state: InputState):
         if self.is_in_break:
             
-            self.break_timer += dt
+            if input_state.starting_wave: 
+                self.tab_hold_duration += dt
+            else:
+                self.tab_hold_duration = 0
 
-            if self.break_timer >= self.break_duration:
+            if self.tab_hold_duration >= self.wave_start_timer:
 
-                self.break_timer = 0
+                self.tab_hold_duration = 0
                 self.is_in_break = False
 
                 self.curent_wave_index += 1
@@ -106,3 +109,8 @@ class WaveManager:
         if not self.spawn_queue and not self.zombie and barricaded_zombies_killed:
             self.is_in_break = True
             print("DEBUG Wave completed")
+
+    def get_start_wave_progress(self) -> int:
+        if self.tab_hold_duration <= 0:
+            return 0
+        return min(1, self.tab_hold_duration / self.wave_start_timer)

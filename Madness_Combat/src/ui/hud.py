@@ -59,11 +59,39 @@ class HUD:
         total_waves = len(self.wave_manager.waves)
 
         if self.wave_manager.is_in_break:
-            time_left = max(0, self.wave_manager.break_duration - self.wave_manager.break_timer)
-            text = f"Wave: {wave_number}/{total_waves} | Break: {time_left:.1f}"
+            text = f"Wave: {wave_number}/{total_waves} | Hold TAB to start"
+            self.render_text(screen, text, x, y)
+            self.render_wave_bar(screen, x , y + 36)
         else:
             zombies_left_to_spawn = len(self.wave_manager.spawn_queue)
             zombies_alive = len(self.wave_manager.zombie)
             text = f"Wave: {wave_number}/{total_waves} | Zombies: {zombies_alive} | Queue: {zombies_left_to_spawn}"
 
         self.render_text(screen, text, x, y)
+    
+    def render_wave_bar(self, screen, x, y):
+        progress = self.wave_manager.get_start_wave_progress()
+
+        bar_width = 160
+        bar_height = 32
+
+        border_color = (255, 255, 255)
+        fill_color = (80, 220, 120)
+        bg_color = (40, 40, 40)
+
+        bar_rect = pygame.Rect(x, y, bar_width, bar_height)
+        inner_rect = bar_rect.inflate(-6, -6)
+
+        pygame.draw.rect(screen, bg_color, bar_rect)
+        pygame.draw.rect(screen, border_color, bar_rect, 3)
+
+        fill_width = int(inner_rect.width * progress)
+
+        fill_rect = pygame.Rect(
+            inner_rect.x,
+            inner_rect.y,
+            fill_width,
+            inner_rect.height
+        )
+
+        pygame.draw.rect(screen, fill_color, fill_rect)

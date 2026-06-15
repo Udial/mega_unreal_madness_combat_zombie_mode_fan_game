@@ -7,13 +7,9 @@ class Camera:
         self.follow_speed = 8
 
     def update(self, target):
-        if self.x < self.max_x:
-            target_center_x = target.rect.centerx
-
-            self.x = target_center_x - self.screen_width // 2
-
-            self.x = max(0, self.x)
-            self.x = min(self.x, self.world_width, self.screen_width)
+        target_center_x = target.rect.centerx
+        desired_x = target_center_x - self.screen_width // 2
+        self.x = max(0, min(desired_x, self.max_x))
     
     def apply(self, rect):
         return rect.move(-int(self.x), 0)

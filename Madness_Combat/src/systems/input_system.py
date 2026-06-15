@@ -9,6 +9,7 @@ class InputState:
         self.buying_ammo = False
         self.buying_medkit = False
         self.reloading_weapon = False
+        self.starting_wave = False
 
 class InputSystem:
     def __init__(self):
@@ -41,6 +42,10 @@ class InputSystem:
             input_state.reloading_weapon = True
         else:
             input_state.reloading_weapon = False
+        if keys[pygame.K_TAB]:
+            input_state.starting_wave = True
+        else:
+            input_state.starting_wave = False
         
         
         InputSystem.last_keys = keys
