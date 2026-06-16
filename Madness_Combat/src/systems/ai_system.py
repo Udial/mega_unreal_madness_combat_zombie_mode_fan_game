@@ -8,11 +8,11 @@ class AISystem:
         self.movement_system = movement_system
         self.player = player
     
-    def update(self, zombies: list[Zombie], dt):
+    def update(self, zombies: list[Zombie], room_type: str, dt):
         for zombie in zombies:
             if zombie.get_distance_to(self.player) > zombie.weapon.range:
                 input_state = self._build_input(zombie)
-                self.movement_system.update(zombie, input_state, dt)
+                self.movement_system.update(zombie, input_state, room_type, dt)
             else:
                 zombie.weapon.shoot()
 

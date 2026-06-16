@@ -9,6 +9,7 @@ from ..entities.entry_point import EntryPoint
 from ..entities.zombie import Zombie
 from ..entities.bullet import Bullet
 from ..entities.weapon import Ranged, Melee
+from ..entities.player_door import PlayerDoor
 from ..systems.input_system import InputSystem
 from ..systems.movement_system import MovementSystem
 from ..systems.collision_system import CollisionSystem
@@ -28,10 +29,12 @@ class GameScene(BaseScene):
     def __init__(self, game):
         super().__init__(game)
 
+        self.current_room = "arena"
+
         self.camera = Camera(
             settings.CAMERA_SCREEN_WIDTH,
             settings.SCREEN_WIDTH,
-            settings.MAX_CAMERA_X
+            settings.MAX_CAMERA_X_ARENA
         )
 
         self.title_font = pygame.font.SysFont(None, 72)
@@ -43,10 +46,32 @@ class GameScene(BaseScene):
                             True,
                             )
         
-        self.window_entry = EntryPoint(
+        #self.window_entry = EntryPoint(
+        #    settings.ENTRY_POINTS_TUPLE[0],
+        #    'window',
+        #    0
+        #)
+
+        self.shop_room_door = PlayerDoor(
             settings.ENTRY_POINTS_TUPLE[0],
-            'window',
-            0
+            "shop_room",
+            (300, 900),
+            "top"
+        )
+
+        shop_exit_points = make_wall_entry(
+            settings.WALL_CORDS_TUPLE_SHOP[0],
+            u1 = 0.4,
+            u2 = 0.6,
+            v_top = 0.8,
+            v_bottom = 1
+        )
+        
+        self.shop_room_exit_door = PlayerDoor(
+            shop_exit_points,
+            "arena",
+            (3000, 900),
+            "left"
         )
 
         left_door_points = make_wall_entry(
@@ -76,21 +101,35 @@ class GameScene(BaseScene):
         self.back_wall = Wall(settings.WALL_CORDS_TUPLE[2], False)
         self.roof = Wall(settings.WALL_CORDS_TUPLE[3], False)
 
+        self.shop_left_wall = Wall(settings.WALL_CORDS_TUPLE_SHOP[0], False)
+        self.shop_right_wall = Wall(settings.WALL_CORDS_TUPLE_SHOP[1], False)
+        self.shop_back_wall = Wall(settings.WALL_CORDS_TUPLE_SHOP[2], False)
+        self.shop_roof = Wall(settings.WALL_CORDS_TUPLE_SHOP[3], False)
+
         self.walls = [
             self.left_wall,
             self.right_wall,
             self.back_wall,
             self.roof
         ]
+
+        self.shop_walls = [
+            self.shop_left_wall,
+            self.shop_right_wall,
+            self.shop_back_wall,
+            self.shop_roof
+        ]
+
         self.player = Player(800, 900, 50, 100, 500, 100)
         self.zombie_list = []
         self.projectile_list = []
         self.entry_points = [
-            self.window_entry,
+            #self.window_entry,
             self.left_door_entry,
             self.right_door_entry
         ]
         self.barricade_list = []
+        self.active_player_doors = []
         
 
         self.economy_manager = EconomyManager()
@@ -112,7 +151,10 @@ class GameScene(BaseScene):
             self.economy_manager,
             self.player
         )
-        self.collision_system = CollisionSystem()
+        self.collision_system = CollisionSystem(
+            self.walls,
+            self.shop_walls
+        )
         self.input_system = InputSystem()
         self.movement_system = MovementSystem(
             self.collision_system
@@ -158,6 +200,23 @@ class GameScene(BaseScene):
             input_state
         )
 
+        if self.current_room == "arena":
+            self.active_player_doors = [self.shop_room_door]
+            self.camera.max_x = settings.MAX_CAMERA_X_ARENA
+        elif self.current_room == "shop_room":
+            self.active_player_doors = [self.shop_room_exit_door]
+            self.camera.max_x = settings.MAX_CAMERA_X_SHOP
+        
+        for door in self.active_player_doors:
+            if self.wave_manager.is_in_break and door.update(
+                self.player,
+                self.collision_system,
+                input_state
+            ):
+                self.current_room = door.target_room
+                self.camera.update(self.player)
+                break
+
         if isinstance(self.player.weapon, Melee):
             self.player.weapon.update(dt, self.camera)    
               
@@ -180,22 +239,24 @@ class GameScene(BaseScene):
         self.movement_system.update(
             self.player,
             input_state,
+            self.current_room,
             dt
         )
 
-        self.camera.update(self.player)
+        self.camera.update(self.player,)
 
         if self.player.weapon != None:
             if self.player.weapon == Ranged:
                 self.player.weapon.start_reload(
                     input_state
                 )
-
+        
         for ep in self.entry_points:
             ep.update(
                 self.player,
                 self.collision_system,
-                input_state, self.damage_system,
+                input_state,
+                self.damage_system,
                 dt
             )
 
@@ -207,7 +268,7 @@ class GameScene(BaseScene):
         
         projectiles = [e for e in self.projectile_list if isinstance(e, Bullet)]
 
-        self.ai_system.update(zombies, dt)
+        self.ai_system.update(zombies, self.current_room, dt)
 
         for proj in projectiles:
             proj.update(dt)
@@ -225,27 +286,42 @@ class GameScene(BaseScene):
         title_rect = title_surface.get_rect(center=(screen.get_width() // 2, 200))
         screen.blit(title_surface, title_rect)
 
-        
-        for wall in self.walls:
-            wall.render(screen, settings.DARK_GRAY, self.camera)
+        if self.current_room == "arena":
 
-        for ep in self.entry_points:
-            ep.render(screen, settings.SLIGHTLY_BRIGHTER_DARK_GRAY, self.camera)
-        
-        for ep in self.entry_points:
-            if ep.barricade != None:
-                ep.barricade.render(screen, self.camera)
+            for wall in self.walls:
+                wall.render(screen, settings.DARK_GRAY, self.camera)
+            
+            self.shop_room_door.render(
+                screen,
+                self.camera
+            )
 
-        for zombie in self.zombie_list:
-            zombie.render(screen, self.camera)
-            zombie.weapon.render(screen, self.camera)
+            for ep in self.entry_points:
+                ep.render(screen, settings.SLIGHTLY_BRIGHTER_DARK_GRAY, self.camera)
+        
+            for ep in self.entry_points:
+                if ep.barricade != None:
+                    ep.barricade.render(screen, self.camera)
+            
+            for zombie in self.zombie_list:
+                zombie.render(screen, self.camera)
+                zombie.weapon.render(screen, self.camera)
+            
+            for proj in self.projectile_list:
+                proj.render(screen, self.camera)
+        
+        elif self.current_room == "shop_room":
+            for wall in self.shop_walls:
+                wall.render(screen, settings.DARK_GRAY, self.camera)
+
+            self.shop_room_exit_door.render(
+                screen,
+                self.camera
+            )
 
         self.exit_button.render(screen)
 
         self.player.render(screen, settings.WHITE, self.camera)
         self.player.weapon.render(screen, self.camera)
-
-        for proj in self.projectile_list:
-            proj.render(screen, self.camera)
 
         self.hud.render(screen)
