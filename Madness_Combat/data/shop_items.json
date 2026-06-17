@@ -1,0 +1,57 @@
+{
+    "weapons": [
+        {
+            "id": "pistol",
+            "name": "P1445",
+            "description": "Basic pistol. Cheap and reliable.",
+            "price": 100,
+            "weapon_id": "pistol",
+            "sprite": "Madness_Combat/assets/sprites/P1445.png"
+        },
+        {
+            "id": "shotgun",
+            "name": "Benelli",
+            "description": "Close range shotgun with multiple pellets.",
+            "price": 250,
+            "weapon_id": "shotgun",
+            "sprite": "Madness_Combat/assets/sprites/Benelli.png"
+        },
+        {
+            "id": "M16",
+            "name": "M16A3",
+            "description": "Fast automatic rifle.",
+            "price": 500,
+            "weapon_id": "M16",
+            "sprite": "Madness_Combat/assets/sprites/M16.png"
+        },
+        {
+            "id": "minigun",
+            "name": "Minigun",
+            "description": "Very high fire rate. Eats ammo fast.",
+            "price": 1200,
+            "weapon_id": "minigun",
+            "sprite": "Madness_Combat/assets/sprites/minigun.png"
+        }
+    ],
+    "ammo": [
+        {
+            "id": "small_ammo",
+            "name": "Ammo Pack",
+            "description": "+60 reserve ammo.",
+            "price": 60,
+            "amount": 60,
+            "sprite": null
+        }
+    ],
+    "consumables": [
+        {
+            "id": "medkit",
+            "name": "Medkit",
+            "description": "Restores 40 HP.",
+            "price": 100,
+            "heal": 40,
+            "sprite": null
+        }
+    ],
+    "armor": []
+}

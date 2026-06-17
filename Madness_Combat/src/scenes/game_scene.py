@@ -10,6 +10,7 @@ from ..entities.zombie import Zombie
 from ..entities.bullet import Bullet
 from ..entities.weapon import Ranged, Melee
 from ..entities.player_door import PlayerDoor
+from ..entities.computer_terminal import ComputerTerminal
 from ..systems.input_system import InputSystem
 from ..systems.movement_system import MovementSystem
 from ..systems.collision_system import CollisionSystem
@@ -22,6 +23,7 @@ from ..systems.economy_manager import EconomyManager
 from ..systems.shop_manager import ShopManager
 from ..systems.weapon_factory import WeaponFactory
 from ..ui.hud import HUD
+from ..ui.shop_ui import ShopUI
 
 from ..utils.geometry import make_wall_entry
 
@@ -120,6 +122,13 @@ class GameScene(BaseScene):
             self.shop_roof
         ]
 
+        self.shop_terminal = ComputerTerminal(
+            820,
+            430,
+            280,
+            220
+        )
+
         self.player = Player(800, 900, 50, 100, 500, 100)
         self.zombie_list = []
         self.projectile_list = []
@@ -149,7 +158,8 @@ class GameScene(BaseScene):
         )
         self.shop_manager = ShopManager(
             self.economy_manager,
-            self.player
+            self.player,
+            self.weapon_factory
         )
         self.collision_system = CollisionSystem(
             self.walls,
@@ -178,14 +188,20 @@ class GameScene(BaseScene):
             self.economy_manager,
             self.wave_manager
         )
+        self.shop_ui = ShopUI(
+            self.shop_manager
+        )
 
         players_weapon = self.weapon_factory.create_weapon("M16")
         self.weapon_factory.assign_weapon(players_weapon, self.player)
         
 
     def handle_event(self, event):
+        self.shop_ui.handle_event(event)
+        if self.shop_ui.is_open:
+            return
+        
         clicked = self.exit_button.is_clicked()
-
         if clicked:
             from .main_menu_scene import MainMenuScene
             self.game.scene_manager.set_scene(MainMenuScene(self.game))
@@ -206,7 +222,18 @@ class GameScene(BaseScene):
         elif self.current_room == "shop_room":
             self.active_player_doors = [self.shop_room_exit_door]
             self.camera.max_x = settings.MAX_CAMERA_X_SHOP
+
+            if self.shop_terminal.update(
+                self.player,
+                self.collision_system,
+                input_state
+            ):
+                self.shop_ui.open()
         
+        if self.shop_ui.is_open:
+            self.camera.update(self.player)
+            return
+
         for door in self.active_player_doors:
             if self.wave_manager.is_in_break and door.update(
                 self.player,
@@ -227,10 +254,6 @@ class GameScene(BaseScene):
             self.player.weapon.start_reload(
                 input_state
             )      
-
-        self.shop_manager.buy(
-            input_state
-        )
 
         self.combat_system.attack(
             input_state
@@ -319,9 +342,15 @@ class GameScene(BaseScene):
                 self.camera
             )
 
+            self.shop_terminal.render(
+                screen,
+                self.camera
+            )
+
         self.exit_button.render(screen)
 
         self.player.render(screen, settings.WHITE, self.camera)
         self.player.weapon.render(screen, self.camera)
 
         self.hud.render(screen)
+        self.shop_ui.render(screen)
