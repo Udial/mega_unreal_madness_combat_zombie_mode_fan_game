@@ -1,5 +1,5 @@
 import pygame
-from ...settings import WALL_CORDS_TUPLE, SCREEN_WIDTH_MID, SCREEN_HEIGHT
+from ...settings import WALL_CORDS_TUPLE, WORLD_WIDTH_MID, WORLD_HEIGHT
 from ..entities.wall import Wall
 
 
@@ -26,7 +26,7 @@ class CollisionSystem:
         ]
 
     def is_player_point_past_line_horizontal(self, player_feet_point: tuple, room_type: str) -> bool:
-        if player_feet_point[0] < SCREEN_WIDTH_MID:
+        if player_feet_point[0] < WORLD_WIDTH_MID:
             A = self.left_wall_cords[0] if room_type == "arena" else self.shop_left_wall_cords[0]
             B = self.left_wall_cords[1] if room_type == "arena" else self.shop_left_wall_cords[1]
 
@@ -54,7 +54,7 @@ class CollisionSystem:
     def is_player_point_past_line_vertical(self, player_feet_point: tuple) -> bool:
         if self.top_wall_cords[0][1] > player_feet_point[1]:
             return True
-        elif player_feet_point[1] > SCREEN_HEIGHT:
+        elif player_feet_point[1] > WORLD_HEIGHT:
             return True
         
 

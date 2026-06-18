@@ -24,7 +24,8 @@ class ComputerTerminal:
             width + 80,
             80
         )
-        
+        self.can_interact = False
+
         self.sprite_path = sprite_path
         self.sprite = None
 
@@ -40,12 +41,12 @@ class ComputerTerminal:
         collision_system: CollisionSystem,
         input_state: InputState
     ) -> bool:
-        can_interact = self.can_player_interact(player, collision_system)
+        self.can_interact = self.can_player_interact(player, collision_system)
 
         interact_pressed_once = input_state.interact and not self.last_interact
         self.last_interact = input_state.interact
 
-        return can_interact and interact_pressed_once
+        return self.can_interact and interact_pressed_once
     
     def can_player_interact(
             self,
@@ -82,3 +83,13 @@ class ComputerTerminal:
         
         pygame.draw.rect(screen, settings.GREEN, interaction_rect, 3)
         
+    def render_hint(self, screen, camera: Camera):
+        if not self.can_interact:
+            return
+        
+        font = pygame.font.SysFont(None, 28)
+        text_surface = font.render("Press E to open shop", True, settings.WHITE)
+        screen_x = self.rect.centerx 
+        screen_y = self.rect.centery
+
+        screen.blit(text_surface, text_surface.get_rect(center=(screen_x, screen_y)))

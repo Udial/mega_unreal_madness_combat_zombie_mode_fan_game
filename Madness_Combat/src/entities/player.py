@@ -6,7 +6,10 @@ class Player(BaseEntity):
     def __init__(self, x: int, y: int, width: int , height: int, speed: int, hp: int):
         super().__init__(x, y, width, height)
         self.speed = speed
+        self.max_hp = 100
         self.hp = hp
+        self.max_armor = 100
+        self.armor = 0
         self.weapon = None
         self.amount_of_barricades = 0
         self.ammo = 200

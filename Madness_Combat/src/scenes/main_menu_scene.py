@@ -14,22 +14,15 @@ class MainMenuScene(BaseScene):
         self.text_font = pygame.font.SysFont(None, 36)
         self.to_the_game_button = Button(settings.BASE_BUTTON_WIDTH, 
                             settings.BASE_BUTTON_HEIGHT, 
-                            (settings.SCREEN_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
-                            (settings.SCREEN_HEIGHT_MID - (settings.BASE_BUTTON_HEIGHT / 2)),
+                            (settings.CAMERA_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
+                            (settings.CAMERA_HEIGHT_MID - (settings.BASE_BUTTON_HEIGHT / 2)),
                             "Play",
-                            True,
-                            )
-        self.settings_button = Button(settings.BASE_BUTTON_WIDTH, 
-                            settings.BASE_BUTTON_HEIGHT, 
-                            (settings.SCREEN_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
-                            (settings.SCREEN_HEIGHT_MID + (2 * (settings.BASE_BUTTON_HEIGHT / 2))),
-                            "Settings",
                             True,
                             )
         self.exit_button = Button(settings.BASE_BUTTON_WIDTH, 
                             settings.BASE_BUTTON_HEIGHT, 
-                            (settings.SCREEN_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
-                            (settings.SCREEN_HEIGHT_MID + 2 * (2 * (settings.BASE_BUTTON_HEIGHT / 2))),
+                            (settings.CAMERA_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
+                            (settings.CAMERA_HEIGHT_MID + 2 * (2 * (settings.BASE_BUTTON_HEIGHT / 2))),
                             "Exit",
                             True,
                             )
@@ -37,7 +30,6 @@ class MainMenuScene(BaseScene):
     def handle_event(self, event):
 
         play = self.to_the_game_button.is_clicked()
-        settings_tab = self.settings_button.is_clicked()
         exit = self.exit_button.is_clicked()
 
 
@@ -46,9 +38,6 @@ class MainMenuScene(BaseScene):
         
         if exit:
             self.game.running = False
-
-        if settings_tab:
-            self.game.scene_manager.set_scene(SettingsScene(self.game))
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
@@ -64,7 +53,6 @@ class MainMenuScene(BaseScene):
 
         self.to_the_game_button.render(screen)
         self.exit_button.render(screen)
-        self.settings_button.render(screen)
 
         title_surface = self.title_font.render("Main menu", True, settings.WHITE)
         title_rect = title_surface.get_rect(center=(screen.get_width() // 2, 220))

@@ -8,7 +8,7 @@ from .scene_manager import SceneManager
 
 class Game:
     def __init__(self):
-        self.screen = pygame.display.set_mode((settings.CAMERA_SCREEN_WIDTH, settings.SCREEN_HEIGHT))
+        self.screen = pygame.display.set_mode((settings.CAMERA_SCREEN_WIDTH, settings.CAMERA_SCREEN_HEIGHT))
         pygame.display.set_caption(settings.WINDOW_NAME)
         self.clock = pygame.time.Clock()
         self.running = True

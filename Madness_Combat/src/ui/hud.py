@@ -24,7 +24,7 @@ class HUD:
         x = self.padding
         y = self.padding
 
-        self.render_text(screen, f"HP: {self.player.hp}", x, y)
+        self.render_text(screen, f"HP: {self.player.hp} | HEV charge: {self.player.armor}", x, y)
         y += self.line_height
 
         self.render_text(screen, f"Credits: {self.economy_manager.credits}", x, y)
@@ -55,6 +55,10 @@ class HUD:
         self.render_text(screen, text, x, y)
 
     def render_wave_info(self, screen, x, y):
+        if self.wave_manager.all_waves_completed:
+            self.render_text(screen, "All waves completed!", x, y, (80, 220, 120))
+            return
+        
         wave_number = self.wave_manager.curent_wave_index + 1
         total_waves = len(self.wave_manager.waves)
 

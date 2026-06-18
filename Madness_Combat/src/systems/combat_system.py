@@ -65,7 +65,7 @@ class CombatSystem:
 
         for zombie in self.zombie_list:
             if zombie.rect.colliderect(attack_rect):
-                self.damage_system.apply_damage(zombie, damage, self.economy_manager)
+                self.damage_system.apply_damage(zombie, damage)
         
         print("DEBUG Attacking using melee")
 

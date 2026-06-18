@@ -8,17 +8,297 @@
                     "count": 5
                 }
             ],
-            "spawn_delay": 2
+            "spawn_delay": 1.99
         },
         {
             "wave": 2,
             "zombies": [
                 {
-                    "type" : "normal",
-                    "count": 10
+                    "type": "normal",
+                    "count": 8
                 }
             ],
-            "spawn_delay": 1
+            "spawn_delay": 1.94
+        },
+        {
+            "wave": 3,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 11
+                }
+            ],
+            "spawn_delay": 1.88
+        },
+        {
+            "wave": 4,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 14
+                }
+            ],
+            "spawn_delay": 1.83
+        },
+        {
+            "wave": 5,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 17
+                }
+            ],
+            "spawn_delay": 1.77
+        },
+        {
+            "wave": 6,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 22
+                }
+            ],
+            "spawn_delay": 1.72
+        },
+        {
+            "wave": 7,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 26
+                }
+            ],
+            "spawn_delay": 1.66
+        },
+        {
+            "wave": 8,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 30
+                }
+            ],
+            "spawn_delay": 1.61
+        },
+        {
+            "wave": 9,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 34
+                }
+            ],
+            "spawn_delay": 1.55
+        },
+        {
+            "wave": 10,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 38
+                }
+            ],
+            "spawn_delay": 1.5
+        },
+        {
+            "wave": 11,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 43
+                }
+            ],
+            "spawn_delay": 1.44
+        },
+        {
+            "wave": 12,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 48
+                }
+            ],
+            "spawn_delay": 1.39
+        },
+        {
+            "wave": 13,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 53
+                }
+            ],
+            "spawn_delay": 1.33
+        },
+        {
+            "wave": 14,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 58
+                }
+            ],
+            "spawn_delay": 1.28
+        },
+        {
+            "wave": 15,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 63
+                }
+            ],
+            "spawn_delay": 1.22
+        },
+        {
+            "wave": 16,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 68
+                }
+            ],
+            "spawn_delay": 1.17
+        },
+        {
+            "wave": 17,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 73
+                }
+            ],
+            "spawn_delay": 1.11
+        },
+        {
+            "wave": 18,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 78
+                }
+            ],
+            "spawn_delay": 1.06
+        },
+        {
+            "wave": 19,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 83
+                }
+            ],
+            "spawn_delay": 1.0
+        },
+        {
+            "wave": 20,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 88
+                }
+            ],
+            "spawn_delay": 0.95
+        },
+        {
+            "wave": 21,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 94
+                }
+            ],
+            "spawn_delay": 0.89
+        },
+        {
+            "wave": 22,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 100
+                }
+            ],
+            "spawn_delay": 0.84
+        },
+        {
+            "wave": 23,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 106
+                }
+            ],
+            "spawn_delay": 0.78
+        },
+        {
+            "wave": 24,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 112
+                }
+            ],
+            "spawn_delay": 0.73
+        },
+        {
+            "wave": 25,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 118
+                }
+            ],
+            "spawn_delay": 0.67
+        },
+        {
+            "wave": 26,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 124
+                }
+            ],
+            "spawn_delay": 0.62
+        },
+        {
+            "wave": 27,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 130
+                }
+            ],
+            "spawn_delay": 0.56
+        },
+        {
+            "wave": 28,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 136
+                }
+            ],
+            "spawn_delay": 0.51
+        },
+        {
+            "wave": 29,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 142
+                }
+            ],
+            "spawn_delay": 0.45
+        },
+        {
+            "wave": 30,
+            "zombies": [
+                {
+                    "type": "normal",
+                    "count": 148
+                }
+            ],
+            "spawn_delay": 0.45
         }
     ]
 }

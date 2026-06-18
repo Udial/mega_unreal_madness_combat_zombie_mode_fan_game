@@ -24,6 +24,7 @@ from ..systems.shop_manager import ShopManager
 from ..systems.weapon_factory import WeaponFactory
 from ..ui.hud import HUD
 from ..ui.shop_ui import ShopUI
+from ..ui.pause_ui import PauseMenu
 
 from ..utils.geometry import make_wall_entry
 
@@ -33,29 +34,15 @@ class GameScene(BaseScene):
 
         self.current_room = "arena"
 
+
         self.camera = Camera(
             settings.CAMERA_SCREEN_WIDTH,
-            settings.SCREEN_WIDTH,
+            settings.WORLD_WIDTH,
             settings.MAX_CAMERA_X_ARENA
         )
 
-        self.title_font = pygame.font.SysFont(None, 72)
-        self.exit_button = Button(settings.BASE_BUTTON_WIDTH, 
-                            settings.BASE_BUTTON_HEIGHT, 
-                            (settings.SCREEN_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
-                            (settings.SCREEN_HEIGHT_MID - (settings.BASE_BUTTON_HEIGHT / 2)),
-                            "Exit",
-                            True,
-                            )
-        
-        #self.window_entry = EntryPoint(
-        #    settings.ENTRY_POINTS_TUPLE[0],
-        #    'window',
-        #    0
-        #)
-
         self.shop_room_door = PlayerDoor(
-            settings.ENTRY_POINTS_TUPLE[0],
+            settings.ENTRY_POINTS_TUPLE[2],
             "shop_room",
             (300, 900),
             "top"
@@ -76,6 +63,18 @@ class GameScene(BaseScene):
             "left"
         )
 
+        self.window_entry_left = EntryPoint(
+            settings.ENTRY_POINTS_TUPLE[0],
+            'window',
+            0
+        )
+
+        self.window_entry_right = EntryPoint(
+            settings.ENTRY_POINTS_TUPLE[1],
+            'window',
+            1
+        )
+
         left_door_points = make_wall_entry(
             settings.WALL_CORDS_TUPLE[0],
             u1 = 0.4,
@@ -92,10 +91,14 @@ class GameScene(BaseScene):
         )
 
         self.left_door_entry = EntryPoint(
-            left_door_points, "door", 1
+            left_door_points,
+            "door",
+            2
         )
         self.right_door_entry = EntryPoint(
-            right_door_ponts, "door", 2
+            right_door_ponts,
+            "door",
+            3
         )
 
         self.left_wall = Wall(settings.WALL_CORDS_TUPLE[0], False)
@@ -129,13 +132,22 @@ class GameScene(BaseScene):
             220
         )
 
-        self.player = Player(800, 900, 50, 100, 500, 100)
+        self.player = Player(
+            800,
+            900,
+            settings.HITBOX_WIDTH,
+            settings.HITBOX_HEIGHT,
+            500,
+            40
+        )
+
         self.zombie_list = []
         self.projectile_list = []
         self.entry_points = [
-            #self.window_entry,
+            self.window_entry_left,
+            self.window_entry_right,
             self.left_door_entry,
-            self.right_door_entry
+            self.right_door_entry,
         ]
         self.barricade_list = []
         self.active_player_doors = []
@@ -191,34 +203,59 @@ class GameScene(BaseScene):
         self.shop_ui = ShopUI(
             self.shop_manager
         )
+        self.pause_menu = PauseMenu()
 
-        players_weapon = self.weapon_factory.create_weapon("M16")
+        players_weapon = self.weapon_factory.create_weapon("bat")
         self.weapon_factory.assign_weapon(players_weapon, self.player)
         
 
     def handle_event(self, event):
+        if self.pause_menu.is_open:
+            pause_action = self.pause_menu.handle_event(event)
+
+            if pause_action == "resume":
+                self.pause_menu.close()
+            elif pause_action == "exit":
+                from .main_menu_scene import MainMenuScene
+                self.game.scene_manager.set_scene(MainMenuScene(self.game))
+            return
+        
         self.shop_ui.handle_event(event)
         if self.shop_ui.is_open:
             return
         
-        clicked = self.exit_button.is_clicked()
-        if clicked:
-            from .main_menu_scene import MainMenuScene
-            self.game.scene_manager.set_scene(MainMenuScene(self.game))
 
 
     def update(self, dt):
 
         input_state = self.input_system.get_input()
 
-        self.wave_manager.update(
-            dt,
-            input_state
-        )
+        if input_state.pause_pressed:
+            if self.shop_ui.is_open:
+                self.shop_ui.close()
+            else:
+                self.pause_menu.toggle()
+        
+        if self.pause_menu.is_open:
+            return
 
+        if self.shop_ui.is_open:
+            self.camera.update(self.player)
+            return
+        
         if self.current_room == "arena":
             self.active_player_doors = [self.shop_room_door]
             self.camera.max_x = settings.MAX_CAMERA_X_ARENA
+
+            self.wave_manager.update(
+            dt,
+            input_state
+        )
+            
+            self.combat_system.attack(
+            input_state
+        )
+            
         elif self.current_room == "shop_room":
             self.active_player_doors = [self.shop_room_exit_door]
             self.camera.max_x = settings.MAX_CAMERA_X_SHOP
@@ -229,10 +266,6 @@ class GameScene(BaseScene):
                 input_state
             ):
                 self.shop_ui.open()
-        
-        if self.shop_ui.is_open:
-            self.camera.update(self.player)
-            return
 
         for door in self.active_player_doors:
             if self.wave_manager.is_in_break and door.update(
@@ -250,14 +283,11 @@ class GameScene(BaseScene):
         if isinstance(self.player.weapon, Ranged):
             self.player.weapon.update_ranged(dt, self.camera)         
 
+        
         if isinstance(self.player.weapon, Ranged):
             self.player.weapon.start_reload(
                 input_state
             )      
-
-        self.combat_system.attack(
-            input_state
-        )
 
         self.movement_system.update(
             self.player,
@@ -266,13 +296,7 @@ class GameScene(BaseScene):
             dt
         )
 
-        self.camera.update(self.player,)
-
-        if self.player.weapon != None:
-            if self.player.weapon == Ranged:
-                self.player.weapon.start_reload(
-                    input_state
-                )
+        self.camera.update(self.player)
         
         for ep in self.entry_points:
             ep.update(
@@ -304,10 +328,6 @@ class GameScene(BaseScene):
 
     def render(self, screen):
         screen.fill(settings.GRAY_COLOR_TEMP)
-
-        title_surface = self.title_font.render("game scene", True, settings.WHITE)
-        title_rect = title_surface.get_rect(center=(screen.get_width() // 2, 200))
-        screen.blit(title_surface, title_rect)
 
         if self.current_room == "arena":
 
@@ -346,11 +366,15 @@ class GameScene(BaseScene):
                 screen,
                 self.camera
             )
-
-        self.exit_button.render(screen)
+            self.shop_terminal.render_hint(
+                screen,
+                self.camera
+            )
 
         self.player.render(screen, settings.WHITE, self.camera)
         self.player.weapon.render(screen, self.camera)
 
         self.hud.render(screen)
         self.shop_ui.render(screen)
+
+        self.pause_menu.render(screen)

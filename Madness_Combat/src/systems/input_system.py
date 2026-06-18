@@ -10,6 +10,8 @@ class InputState:
         self.buying_medkit = False
         self.reloading_weapon = False
         self.starting_wave = False
+        self.pause_pressed = False
+
 
 class InputSystem:
     def __init__(self):
@@ -34,7 +36,7 @@ class InputSystem:
             input_state.interact = True
         else:
             input_state.interact = False
-        if keys[pygame.K_F1] and not InputSystem.last_keys[pygame.K_F1]:
+        if keys[pygame.K_F1] and not self.last_keys[pygame.K_F1]:
             input_state.buying_barricade = True
         else:
             input_state.buying_barricade = False
@@ -46,9 +48,12 @@ class InputSystem:
             input_state.starting_wave = True
         else:
             input_state.starting_wave = False
+        if keys[pygame.K_ESCAPE] and not self.last_keys[pygame.K_ESCAPE]:
+            input_state.pause_pressed = True
+        else:
+            input_state.pause_pressed = False
         
-        
-        InputSystem.last_keys = keys
+        self.last_keys = keys
 
         mouse_buttons = pygame.mouse.get_pressed()
         input_state.shoot = mouse_buttons[0]

@@ -9,6 +9,7 @@ class Zombie(BaseEntity):
         super().__init__(x, y, HITBOX_WIDTH, HITBOX_HEIGHT)
         self.speed = ZOMBIE_SPEED
         self.hp = ZOMBIE_HEALTH
+        self.armor = 0
         self.reward = 10
         self.weapon = None
         self.look_direction = pygame.Vector2(0, 0)

@@ -51,9 +51,9 @@ class ShopManager:
         self.player.ammo += item["amount"]
     
     def buy_consumable(self, item: dict):
-        if "heal" in item:
-            self.player.hp += item["heal"]
+        if "heal" in item and (self.player.hp < self.player.max_hp):
+            self.player.hp = int(min(self.player.max_hp, self.player.hp + item["heal"]))
         
     def buy_armor(self, item: dict):
-        #IMPLEMENT WHE ARMOR BECOMES A THING
-        pass
+        if "charge" in item and (self.player.armor < self.player.max_armor):
+            self.player.armor = int(min(self.player.max_armor, self.player.armor + item["charge"]))

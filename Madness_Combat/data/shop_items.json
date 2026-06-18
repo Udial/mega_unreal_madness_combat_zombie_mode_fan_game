@@ -36,11 +36,27 @@
     "ammo": [
         {
             "id": "small_ammo",
-            "name": "Ammo Pack",
-            "description": "+60 reserve ammo.",
+            "name": "Small ammo Pack",
+            "description": "+20 reserve ammo.",
             "price": 60,
-            "amount": 60,
-            "sprite": null
+            "amount": 20,
+            "sprite": "Madness_Combat/assets/sprites/RifleAmmo308.png"
+        },
+        {
+            "id": "medium_ammo",
+            "name": "Medium ammo Pack",
+            "description": "+50 reserve ammo.",
+            "price": 150,
+            "amount": 50,
+            "sprite": "Madness_Combat/assets/sprites/RifleAmmo308.png"
+        },
+        {
+            "id": "large_ammo",
+            "name": "Large ammo Pack",
+            "description": "+100 reserve ammo.",
+            "price": 300,
+            "amount": 100,
+            "sprite": "Madness_Combat/assets/sprites/RifleAmmo308.png"
         }
     ],
     "consumables": [
@@ -50,8 +66,17 @@
             "description": "Restores 40 HP.",
             "price": 100,
             "heal": 40,
-            "sprite": null
+            "sprite": "Madness_Combat/assets/sprites/FirstAid.png"
         }
     ],
-    "armor": []
+    "armor": [
+        {
+            "id": "armor",
+            "name": "HEV Suit battery",
+            "description": "Restores 25 armor.",
+            "price": 200,
+            "charge": 25,
+            "sprite": null
+        }
+    ]
 }
