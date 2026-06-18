@@ -1,11 +1,12 @@
 from ...settings import HITBOX_HEIGHT, HITBOX_WIDTH
 from ..entities.zombie import Zombie
 from .weapon_factory import WeaponFactory
+from ..entities.entry_point import EntryPoint
 import random
 
 
 class SpawnManager:
-    def __init__(self, entry_points: list, entities: list, weapon_factory: WeaponFactory):
+    def __init__(self, entry_points: list[EntryPoint], entities: list, weapon_factory: WeaponFactory):
         self.entry_points = entry_points
         self.entities = entities
         self.weapon_factory = weapon_factory
@@ -16,7 +17,7 @@ class SpawnManager:
         else:
             entry = self.entry_points[entry_index]
         
-        spawn_x, spawn_y = entry.get_spawn_point()
+        spawn_x, spawn_y = entry.spawn_point
         x = spawn_x - HITBOX_WIDTH // 2
         y = spawn_y - HITBOX_HEIGHT // 2
         if entry.is_open():
@@ -25,8 +26,6 @@ class SpawnManager:
                 zombie = Zombie(x, y)
                 self.weapon_factory.assign_weapon(weapon, zombie)
             self.entities.append(zombie)
-            print("DEBUG Zombie spawned")
             
         elif not entry.is_open():
             entry.rapid_spawn_queue.append(type)
-            print("DEBUG Added zombie to rapid queue")

@@ -12,7 +12,7 @@ class Player(BaseEntity):
         self.armor = 0
         self.weapon = None
         self.amount_of_barricades = 0
-        self.ammo = 200
+        self.ammo = 48
 
     def get_direction(self, camera=None):
         mos_pos = pygame.mouse.get_pos()

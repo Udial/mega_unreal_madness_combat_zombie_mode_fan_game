@@ -13,6 +13,7 @@ class Weapon:
         self.owner = None
         self.combat_system = combat_system
         self.name = data["name"]
+        self.weapon_id = None
 
         self.sprite_path = data["sprite"]
         self.sprite_widht = data["sprite_width"]
@@ -83,6 +84,7 @@ class Ranged(Weapon):
         self.bullet_speed = data["bullet_speed"]
         self.spread = data["spread"]
         self.pellets = data["pellets"]
+        self.fire_mode = data["firemode"]
         self.reloading = False
         self.reload_timer = 0
     
@@ -91,16 +93,13 @@ class Ranged(Weapon):
         
         if self.reloading:
             self.reload_timer -= dt
-            print(f"DEBUG Reloading... Time left: {self.reload_timer}")
             if self.reload_timer <= 0:
                 self.finish_reload()
-                print("DEBUG Weapon Reloaded")
     
     def can_shoot(self):
         if self.cooldown <= 0 and self.current_ammo > 0:
             return True
         else:
-            print("DEBUG Weapon can't shoot, no ammo or on cooldown")
             return False
 
     def shoot(self):
@@ -115,7 +114,6 @@ class Ranged(Weapon):
             
             self.reloading = True
             self.reload_timer = self.reload_time
-            print("DEBUG Started reloading")
 
     def finish_reload(self):        
         need = self.mag_size - self.current_ammo

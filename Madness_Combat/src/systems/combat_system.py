@@ -23,7 +23,9 @@ class CombatSystem:
     #---
 
     def attack(self, input_state: InputState):
-        if input_state.shoot and self.player.weapon.can_shoot():
+        if input_state.shoot and self.player.weapon.can_shoot() and self.player.weapon.fire_mode == "automatic":
+            self.player.weapon.shoot()
+        elif input_state.shoot_pressed and self.player.weapon.can_shoot() and self.player.weapon.fire_mode == "semiauto":
             self.player.weapon.shoot()
 
     def spawn_bullet(self, damage: int, spread: int, speed: int):

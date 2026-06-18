@@ -3,7 +3,7 @@ import pygame
 
 class EconomyManager:
     def __init__(self):
-        self.credits = 9999
+        self.credits = 0
         self.prices = {
             "barricade": 30,
             "ammo": 5,

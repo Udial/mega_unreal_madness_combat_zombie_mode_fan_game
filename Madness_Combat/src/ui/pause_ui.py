@@ -10,6 +10,8 @@ class PauseMenu:
 
         self.resume_button_rect = pygame.Rect(0, 0, 260, 60)
         self.exit_button_rect = pygame.Rect(0, 0, 260, 60)
+        self.save_button_rect = pygame.Rect(0, 0, 260, 60)
+        self.save_wipe_button_rect = pygame.Rect(0, 0, 260, 60)
 
     def toggle(self):
         self.is_open = not self.is_open
@@ -25,12 +27,22 @@ class PauseMenu:
 
         self.resume_button_rect.center = (
             screen_rect.centerx,
+            screen_rect.centery - 100
+        )
+        
+        self.save_button_rect.center = (
+            screen_rect.centerx,
             screen_rect.centery - 20
+        )
+
+        self.save_wipe_button_rect.center = (
+            screen_rect.centerx,
+            screen_rect.centery + 60
         )
 
         self.exit_button_rect.center = (
             screen_rect.centerx,
-            screen_rect.centery + 60
+            screen_rect.centery + 140
         )
 
     def handle_event(self, event):
@@ -43,8 +55,15 @@ class PauseMenu:
             if self.resume_button_rect.collidepoint(mouse_pos):
                 return "resume"
 
+            if self.save_button_rect.collidepoint(mouse_pos):
+                return "save"
+            
+            if self.save_wipe_button_rect.collidepoint(mouse_pos):
+                return "wipe_save"
+
             if self.exit_button_rect.collidepoint(mouse_pos):
                 return "exit"
+            
 
         return None
 
@@ -78,10 +97,12 @@ class PauseMenu:
 
         title_surface = self.title_font.render("PAUSED", True, (255, 255, 255))
         title_rect = title_surface.get_rect(
-            center=(screen_rect.centerx, screen_rect.centery - 130)
+            center=(screen_rect.centerx, screen_rect.centery - 180)
         )
 
         screen.blit(title_surface, title_rect)
 
         self.render_button(screen, self.resume_button_rect, "Resume")
+        self.render_button(screen, self.save_button_rect, "Save")
+        self.render_button(screen, self.save_wipe_button_rect, "Wipe save")
         self.render_button(screen, self.exit_button_rect, "Exit")

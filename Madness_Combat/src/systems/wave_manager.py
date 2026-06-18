@@ -16,7 +16,7 @@ class WaveManager:
         
         self.waves = data["waves"]
 
-        self.curent_wave_index = -1
+        self.current_wave_index = -1
         self.spawn_queue = []
         self.spawn_timer = 0
         self.rapid_spawn_timer = 0
@@ -33,14 +33,13 @@ class WaveManager:
 
 
     def start_wave(self):
-        if self.curent_wave_index >= len(self.waves):
+        if self.current_wave_index >= len(self.waves):
             self.all_waves_completed = True
             self.is_in_break = False
             self.spawn_queue.clear()
-            print("DEBUG all waves completed")
             return
         
-        wave_data = self.waves[self.curent_wave_index]
+        wave_data = self.waves[self.current_wave_index]
 
         self.spawn_queue.clear()
 
@@ -55,9 +54,6 @@ class WaveManager:
         self.curent_spawn_delay = wave_data["spawn_delay"]
 
         self.spawn_timer = 0
-
-        print(f"DEBUG wave {self.curent_wave_index + 1} started")
-
 
     def update(self, dt, input_state: InputState):
         if self.all_waves_completed:
@@ -75,9 +71,9 @@ class WaveManager:
                 self.tab_hold_duration = 0
                 self.is_in_break = False
 
-                self.curent_wave_index += 1
+                self.current_wave_index += 1
 
-                if self.curent_wave_index >= len(self.waves):
+                if self.current_wave_index >= len(self.waves):
                     self.all_waves_completed = True
                     self.is_in_break = False
                     self.spawn_queue.clear()
@@ -99,8 +95,6 @@ class WaveManager:
                 
                 self.spawn_manager.spawn_zombie(zombie_type)
 
-                print("DEBUG Attempted to spawn a zombie")
-
         for ep in self.entry_points:
             if ep.rapid_spawn_queue and not ep.is_blocked:
                 if self.spawn_timer >= self.rapid_spawn_delay:
@@ -108,7 +102,6 @@ class WaveManager:
 
                     zombie = ep.rapid_spawn_queue.pop(0)
                     self.spawn_manager.spawn_zombie(zombie, ep.entry_index)
-                    print("DEBUG Attempting to spawn queued zombie")
                     
                     
         barricaded_zombies_killed = False
@@ -120,17 +113,15 @@ class WaveManager:
                 barricaded_zombies_killed = True
 
         if not self.spawn_queue and not self.zombie and barricaded_zombies_killed:
-            is_last_wave = self.curent_wave_index >= len(self.waves) - 1
+            is_last_wave = self.current_wave_index >= len(self.waves) - 1
             
             if is_last_wave:
                     self.all_waves_completed = True
                     self.is_in_break = False
                     self.spawn_queue.clear()
-                    print("DEBUG All waves completed")
                     return
             
             self.is_in_break = True
-            print("DEBUG Wave Completed")
 
     def get_start_wave_progress(self) -> int:
         if self.tab_hold_duration <= 0:

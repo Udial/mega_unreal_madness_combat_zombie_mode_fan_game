@@ -58,11 +58,11 @@ class EntryPoint(BaseEntity):
         bottom_center_x = (bottom_left[0] + bottom_right[0]) / 2
         bottom_center_y = (bottom_left[1] + bottom_right[1]) / 2
 
-        if self.entry_index == 0:
+        if self.type == "top":
             return bottom_center_x, bottom_center_y
-        if self.entry_index == 1:
+        if self.type == "left":
             return bottom_center_x + 40, bottom_center_y
-        if self.entry_index == 2:
+        if self.type == "right":
             return bottom_center_x - 40, bottom_center_y
 
     def update(self, player: Player, collision_system: CollisionSystem, input_state: InputState, damage_system: DamageSystem, dt):

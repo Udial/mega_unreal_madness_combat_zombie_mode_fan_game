@@ -1,0 +1,22 @@
+{
+    "player": {
+        "x": 800.0,
+        "y": 900.0,
+        "hp": 100,
+        "armor": 0,
+        "ammo": 48,
+        "amount_of_barricades": 0,
+        "weapon_id": "pistol",
+        "weapon_current_ammo": 12
+    },
+    "economy": {
+        "credits": 0
+    },
+    "world": {
+        "current_room": "arena"
+    },
+    "wave": {
+        "next_wave_index": 0,
+        "all_waves_completed": false
+    }
+}

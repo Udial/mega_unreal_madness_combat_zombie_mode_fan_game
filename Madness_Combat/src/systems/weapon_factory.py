@@ -13,11 +13,16 @@ class WeaponFactory:
         data = self.weapon_data[weapon_name]
         weapon_type = data["type"]
 
+        weapon = None
+
         if weapon_type == "ranged":
-            return Ranged(data, self.combat_system)
+            weapon = Ranged(data, self.combat_system)
         if weapon_type == "melee":
-            return Melee(data, self.combat_system) 
+            weapon = Melee(data, self.combat_system) 
         
+        weapon.weapon_id = weapon_name
+        return weapon
+
     def assign_weapon(self, weapon, target):
         target.weapon = weapon
         weapon.owner = target

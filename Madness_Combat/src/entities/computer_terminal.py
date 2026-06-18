@@ -20,7 +20,7 @@ class ComputerTerminal:
 
         self.interaction_rect = pygame.Rect(
             x - 40,
-            y + width + 120,
+            y + width + 100,
             width + 80,
             80
         )
@@ -80,8 +80,6 @@ class ComputerTerminal:
         else:
             pygame.draw.rect(screen, (30, 30, 30), rect)
             pygame.draw.rect(screen, settings.GREEN, rect, 3)
-        
-        pygame.draw.rect(screen, settings.GREEN, interaction_rect, 3)
         
     def render_hint(self, screen, camera: Camera):
         if not self.can_interact:

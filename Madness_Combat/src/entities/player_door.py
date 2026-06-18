@@ -89,7 +89,7 @@ class PlayerDoor:
             points = camera.apply_points(self.points)
         pygame.draw.polygon(
             screen,
-            settings.GREEN,
+            (140, 140, 140),
             points,
             0
         )
@@ -99,9 +99,3 @@ class PlayerDoor:
             points,
             2
         )
-        #DEBUG
-
-        interaction_rect = self.player_interaction_rect
-        if camera is not None:
-            interaction_rect = camera.apply(self.player_interaction_rect)
-        pygame.draw.rect(screen, (0, 255, 0), interaction_rect, 2)

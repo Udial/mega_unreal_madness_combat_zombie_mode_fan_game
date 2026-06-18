@@ -48,7 +48,11 @@ class HUD:
         weapon_name = weapon.name
 
         if hasattr(weapon, "current_ammo") and hasattr(weapon, "mag_size"):
-            text = f"{weapon_name}: {weapon.current_ammo}/{weapon.mag_size} | Ammo: {self.player.ammo}"
+            if getattr(weapon, "reloading", False):
+                reload_time_left = max(0, weapon.reload_timer)
+                text = f"{weapon_name}: Reloading... {reload_time_left:.1f}s | Ammo: {self.player.ammo}"
+            else:
+                text = f"{weapon_name}: {weapon.current_ammo}/{weapon.mag_size} | Ammo: {self.player.ammo}"
         else:
             text = f"Weapon: {weapon_name}"
 
@@ -59,7 +63,7 @@ class HUD:
             self.render_text(screen, "All waves completed!", x, y, (80, 220, 120))
             return
         
-        wave_number = self.wave_manager.curent_wave_index + 1
+        wave_number = self.wave_manager.current_wave_index + 1
         total_waves = len(self.wave_manager.waves)
 
         if self.wave_manager.is_in_break:

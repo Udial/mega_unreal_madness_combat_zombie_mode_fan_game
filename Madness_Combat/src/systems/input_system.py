@@ -4,6 +4,7 @@ class InputState:
     def __init__(self):
         self.move = pygame.Vector2(0, 0)
         self.shoot = False
+        self.shoot_pressed = False
         self.interact = False
         self.buying_barricade = False
         self.buying_ammo = False
@@ -16,6 +17,7 @@ class InputState:
 class InputSystem:
     def __init__(self):
         self.last_keys = None
+        self.last_mouse_buttons = None
 
     def get_input(self) -> object:
         input_state = InputState()
@@ -32,7 +34,7 @@ class InputSystem:
             input_state.move.x = -1
         if keys[pygame.K_d]:
             input_state.move.x = 1
-        if keys[pygame.K_e]:
+        if keys[pygame.K_e] and not self.last_keys[pygame.K_e]:
             input_state.interact = True
         else:
             input_state.interact = False
@@ -56,6 +58,16 @@ class InputSystem:
         self.last_keys = keys
 
         mouse_buttons = pygame.mouse.get_pressed()
-        input_state.shoot = mouse_buttons[0]
 
+        if self.last_mouse_buttons is None:
+            self.last_mouse_buttons = mouse_buttons
+
+        input_state.shoot = mouse_buttons[0]
+        
+        if mouse_buttons[0] and not self.last_mouse_buttons[0]:
+            input_state.shoot_pressed = True
+        else:
+            input_state.shoot_pressed = False
+        
+        self.last_mouse_buttons = mouse_buttons
         return input_state

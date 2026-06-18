@@ -22,6 +22,7 @@ from ..systems.damage_system import DamageSystem
 from ..systems.economy_manager import EconomyManager
 from ..systems.shop_manager import ShopManager
 from ..systems.weapon_factory import WeaponFactory
+from ..systems.save_manager import SaveManager
 from ..ui.hud import HUD
 from ..ui.shop_ui import ShopUI
 from ..ui.pause_ui import PauseMenu
@@ -44,7 +45,7 @@ class GameScene(BaseScene):
         self.shop_room_door = PlayerDoor(
             settings.ENTRY_POINTS_TUPLE[2],
             "shop_room",
-            (300, 900),
+            (120, 850),
             "top"
         )
 
@@ -59,19 +60,19 @@ class GameScene(BaseScene):
         self.shop_room_exit_door = PlayerDoor(
             shop_exit_points,
             "arena",
-            (3000, 900),
+            self.shop_room_door.rect.center,
             "left"
         )
 
         self.window_entry_left = EntryPoint(
             settings.ENTRY_POINTS_TUPLE[0],
-            'window',
+            'top',
             0
         )
 
         self.window_entry_right = EntryPoint(
             settings.ENTRY_POINTS_TUPLE[1],
-            'window',
+            'top',
             1
         )
 
@@ -92,12 +93,12 @@ class GameScene(BaseScene):
 
         self.left_door_entry = EntryPoint(
             left_door_points,
-            "door",
+            "left",
             2
         )
         self.right_door_entry = EntryPoint(
             right_door_ponts,
-            "door",
+            "right",
             3
         )
 
@@ -191,6 +192,7 @@ class GameScene(BaseScene):
             self.zombie_list,
             self.entry_points
         )
+        self.save_manager = SaveManager()
         self.ai_system = AISystem(
             self.movement_system,
             self.player
@@ -204,9 +206,11 @@ class GameScene(BaseScene):
             self.shop_manager
         )
         self.pause_menu = PauseMenu()
+        
 
-        players_weapon = self.weapon_factory.create_weapon("bat")
+        players_weapon = self.weapon_factory.create_weapon("pistol")
         self.weapon_factory.assign_weapon(players_weapon, self.player)
+        self.save_manager.load_game(self)
         
 
     def handle_event(self, event):
@@ -215,7 +219,14 @@ class GameScene(BaseScene):
 
             if pause_action == "resume":
                 self.pause_menu.close()
+            elif pause_action == "save":
+                self.save_manager.save_game(self)
+            elif pause_action == "wipe_save":
+                self.save_manager.reset_save()
+                from .game_scene import GameScene
+                self.game.scene_manager.set_scene(GameScene(self.game))
             elif pause_action == "exit":
+                self.save_manager.save_game(self)
                 from .main_menu_scene import MainMenuScene
                 self.game.scene_manager.set_scene(MainMenuScene(self.game))
             return
