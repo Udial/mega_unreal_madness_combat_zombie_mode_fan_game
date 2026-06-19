@@ -1,33 +1,52 @@
 import pygame
-from ... import settings 
+from ... import settings
 
 
-class Button():
-    def __init__(self, width: int, height: int, x_pos: int, y_pos: int, text: str, enabled: bool, screen=None):
-        self.width = width
-        self.height = height
-        self.x_pos = x_pos
-        self.y_pos = y_pos
+class Button:
+    def __init__(
+        self,
+        width: int,
+        height: int,
+        x_pos: int,
+        y_pos: int,
+        text: str,
+        enabled: bool = True,
+        screen=None,
+        font=None,
+    ):
+        self.width = int(width)
+        self.height = int(height)
+        self.x_pos = int(x_pos)
+        self.y_pos = int(y_pos)
         self.enabled = enabled
         self.text = text
-    
+        self.font = font or settings.BUTTON_FONT
+        self.rect = pygame.Rect(self.x_pos, self.y_pos, self.width, self.height)
+        self.base_color = settings.RED
+        self.hover_color = settings.GREEN
+        self.disabled_color = settings.DARK_GRAY
+        self.text_color = settings.WHITE
+
     def is_hovered_over(self) -> bool:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        
-        if (self.x_pos < mouse_x < (self.x_pos + self.width)) and (self.y_pos < mouse_y < (self.y_pos + self.height)):
-            return True
-        else:
-            return False
-    
+        return self.enabled and self.rect.collidepoint(pygame.mouse.get_pos())
+
     def is_clicked(self) -> bool:
-        if self.is_hovered_over() and pygame.mouse.get_pressed()[0]:
-            return True
-        else:
-            return False
+        return self.enabled and self.is_hovered_over() and pygame.mouse.get_pressed()[0]
+
+    def handle_event(self, event) -> bool:
+        return (
+            self.enabled
+            and event.type == pygame.MOUSEBUTTONDOWN
+            and event.button == 1
+            and self.rect.collidepoint(event.pos)
+        )
 
     def render(self, screen):
-        button_text = settings.BUTTON_FONT.render(self.text, True, settings.WHITE)
-        button_rect = pygame.rect.Rect((self.x_pos, self.y_pos),(self.width, self.height))
-        pygame.draw.rect(screen, settings.GREEN if self.is_hovered_over() else settings.RED, button_rect, 0, 5)
-        screen.blit(button_text, (self.x_pos + 10, self.y_pos + 3))
-        
+        color = self.disabled_color
+        if self.enabled:
+            color = self.hover_color if self.is_hovered_over() else self.base_color
+        pygame.draw.rect(screen, color, self.rect, 0, 5)
+        pygame.draw.rect(screen, settings.WHITE, self.rect, 2, 5)
+        button_text = self.font.render(self.text, True, self.text_color)
+        text_rect = button_text.get_rect(center=self.rect.center)
+        screen.blit(button_text, text_rect)

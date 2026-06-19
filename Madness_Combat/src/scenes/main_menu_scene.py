@@ -12,30 +12,30 @@ class MainMenuScene(BaseScene):
 
         self.title_font = pygame.font.SysFont(None, 72)
         self.text_font = pygame.font.SysFont(None, 36)
-        self.to_the_game_button = Button(settings.BASE_BUTTON_WIDTH, 
-                            settings.BASE_BUTTON_HEIGHT, 
-                            (settings.CAMERA_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
-                            (settings.CAMERA_HEIGHT_MID - (settings.BASE_BUTTON_HEIGHT / 2)),
-                            "Play",
-                            True,
-                            )
-        self.exit_button = Button(settings.BASE_BUTTON_WIDTH, 
-                            settings.BASE_BUTTON_HEIGHT, 
-                            (settings.CAMERA_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
-                            (settings.CAMERA_HEIGHT_MID + 2 * (2 * (settings.BASE_BUTTON_HEIGHT / 2))),
-                            "Exit",
-                            True,
-                            )
+        self.to_the_game_button = Button(
+            settings.BASE_BUTTON_WIDTH,
+            settings.BASE_BUTTON_HEIGHT,
+            (settings.CAMERA_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
+            (settings.CAMERA_HEIGHT_MID - (settings.BASE_BUTTON_HEIGHT / 2)),
+            "Play",
+            True,
+        )
+        self.exit_button = Button(
+            settings.BASE_BUTTON_WIDTH,
+            settings.BASE_BUTTON_HEIGHT,
+            (settings.CAMERA_WIDTH_MID - (settings.BASE_BUTTON_WIDTH / 2)),
+            (settings.CAMERA_HEIGHT_MID + 2 * (2 * (settings.BASE_BUTTON_HEIGHT / 2))),
+            "Exit",
+            True,
+        )
 
     def handle_event(self, event):
-
         play = self.to_the_game_button.is_clicked()
         exit = self.exit_button.is_clicked()
 
-
         if play:
             self.game.scene_manager.set_scene(GameScene(self.game))
-        
+
         if exit:
             self.game.running = False
 
@@ -44,7 +44,7 @@ class MainMenuScene(BaseScene):
                 self.game.scene_manager.set_scene(GameScene(self.game))
             elif event.key == pygame.K_ESCAPE:
                 self.game.running = False
-    
+
     def update(self, dt):
         pass
 

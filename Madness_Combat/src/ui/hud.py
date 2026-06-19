@@ -5,7 +5,9 @@ from ..systems.wave_manager import WaveManager
 
 
 class HUD:
-    def __init__(self, player: Player, economy_manager: EconomyManager, wave_manager: WaveManager):
+    def __init__(
+        self, player: Player, economy_manager: EconomyManager, wave_manager: WaveManager
+    ):
         self.player = player
         self.economy_manager = economy_manager
         self.wave_manager = wave_manager
@@ -24,13 +26,17 @@ class HUD:
         x = self.padding
         y = self.padding
 
-        self.render_text(screen, f"HP: {self.player.hp} | HEV charge: {self.player.armor}", x, y)
+        self.render_text(
+            screen, f"HP: {self.player.hp} | HEV charge: {self.player.armor}", x, y
+        )
         y += self.line_height
 
         self.render_text(screen, f"Credits: {self.economy_manager.credits}", x, y)
         y += self.line_height
 
-        self.render_text(screen, f"Barricades: {self.player.amount_of_barricades}", x, y)
+        self.render_text(
+            screen, f"Barricades: {self.player.amount_of_barricades}", x, y
+        )
         y += self.line_height
 
         self.render_weapon_info(screen, x, y)
@@ -62,21 +68,21 @@ class HUD:
         if self.wave_manager.all_waves_completed:
             self.render_text(screen, "All waves completed!", x, y, (80, 220, 120))
             return
-        
+
         wave_number = self.wave_manager.current_wave_index + 1
         total_waves = len(self.wave_manager.waves)
 
         if self.wave_manager.is_in_break:
             text = f"Wave: {wave_number}/{total_waves} | Hold TAB to start"
             self.render_text(screen, text, x, y)
-            self.render_wave_bar(screen, x , y + 36)
+            self.render_wave_bar(screen, x, y + 36)
         else:
             zombies_left_to_spawn = len(self.wave_manager.spawn_queue)
             zombies_alive = len(self.wave_manager.zombie)
             text = f"Wave: {wave_number}/{total_waves} | Zombies: {zombies_alive} | Queue: {zombies_left_to_spawn}"
 
         self.render_text(screen, text, x, y)
-    
+
     def render_wave_bar(self, screen, x, y):
         progress = self.wave_manager.get_start_wave_progress()
 
@@ -96,10 +102,7 @@ class HUD:
         fill_width = int(inner_rect.width * progress)
 
         fill_rect = pygame.Rect(
-            inner_rect.x,
-            inner_rect.y,
-            fill_width,
-            inner_rect.height
+            inner_rect.x, inner_rect.y, fill_width, inner_rect.height
         )
 
         pygame.draw.rect(screen, fill_color, fill_rect)

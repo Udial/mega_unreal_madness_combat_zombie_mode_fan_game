@@ -14,7 +14,7 @@ class ShopUI:
             ("weapons", "Weapons"),
             ("ammo", "Ammo"),
             ("consumables", "Consumables"),
-            ("armor", "Armor")
+            ("armor", "Armor"),
         ]
 
         self.selected_category = "weapons"
@@ -30,12 +30,9 @@ class ShopUI:
         self.item_rects = []
 
         self.close_button_rect = pygame.Rect(
-            self.window_rect.right - 54,
-            self.window_rect.y + 18,
-            36,
-            36
+            self.window_rect.right - 54, self.window_rect.y + 18, 36, 36
         )
-    
+
     def open(self):
         self.is_open = True
 
@@ -45,15 +42,15 @@ class ShopUI:
     def handle_event(self, event):
         if not self.is_open:
             return
-        
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.close()
-        
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 self.handle_left_click(event.pos)
-        
+
     def handle_left_click(self, mouse_pos: tuple):
         if self.close_button_rect.collidepoint(mouse_pos):
             self.close()
@@ -62,19 +59,19 @@ class ShopUI:
         for category_id, rect in self.category_rects.items():
             if rect.collidepoint(mouse_pos):
                 self.selected_category = category_id
-            
+
         for item, rect in self.item_rects:
             if rect.collidepoint(mouse_pos):
                 self.shop_manager.buy_item(self.selected_category, item)
                 return
-            
+
     def load_sprite(self, sprite_path: str | None, size: tuple):
         if sprite_path is None:
             return None
-        
+
         if not os.path.exists(sprite_path):
             return None
-        
+
         cache_key = (sprite_path, size)
 
         if cache_key not in self.sprite_cache:
@@ -83,11 +80,11 @@ class ShopUI:
             self.sprite_cache[cache_key] = sprite
 
         return self.sprite_cache[cache_key]
-    
+
     def render(self, screen):
         if not self.is_open:
             return
-        
+
         self.render_background(screen)
         self.render_window(screen)
         self.render_categories(screen)
@@ -96,7 +93,9 @@ class ShopUI:
         self.render_close_button(screen)
 
     def render_background(self, screen):
-        overlay = pygame.Surface((screen.get_width(), screen.get_height()), pygame.SRCALPHA)
+        overlay = pygame.Surface(
+            (screen.get_width(), screen.get_height()), pygame.SRCALPHA
+        )
         overlay.fill((0, 0, 0, 150))
         screen.blit(overlay, (0, 0))
 
@@ -110,7 +109,7 @@ class ShopUI:
         credits_surface = self.font.render(
             f"Credits: {self.shop_manager.economy_manager.credits}",
             True,
-            settings.WHITE
+            settings.WHITE,
         )
         screen.blit(credits_surface, (self.window_rect.x + 24, self.window_rect.y + 70))
 
@@ -121,7 +120,7 @@ class ShopUI:
             self.window_rect.x,
             self.window_rect.y + 120,
             left_width,
-            self.window_rect.height - 120
+            self.window_rect.height - 120,
         )
         pygame.draw.rect(screen, (28, 28, 28), category_area)
         pygame.draw.line(
@@ -129,7 +128,7 @@ class ShopUI:
             settings.WHITE,
             (category_area.right, category_area.y),
             (category_area.right, category_area.bottom),
-            2
+            2,
         )
         button_height = 70
         button_margin = 16
@@ -139,7 +138,7 @@ class ShopUI:
                 category_area.x + button_margin,
                 y,
                 category_area.width - button_margin * 2,
-                button_height
+                button_height,
             )
             self.category_rects[category_id] = rect
             if category_id == self.selected_category:
@@ -160,7 +159,7 @@ class ShopUI:
             self.window_rect.x + left_width,
             self.window_rect.y + 120,
             self.window_rect.width - left_width,
-            self.window_rect.height - 120
+            self.window_rect.height - 120,
         )
         items = self.shop_manager.get_items_by_category(self.selected_category)
         card_margin = 18
@@ -169,22 +168,15 @@ class ShopUI:
         y = item_area.y + card_margin
         for item in items:
             card_rect = pygame.Rect(
-                x,
-                y,
-                item_area.width - card_margin * 2,
-                card_height
+                x, y, item_area.width - card_margin * 2, card_height
             )
             self.item_rects.append((item, card_rect))
             pygame.draw.rect(screen, (35, 35, 35), card_rect)
             pygame.draw.rect(screen, settings.WHITE, card_rect, 2)
-            icon_rect = pygame.Rect(
-
-                card_rect.x + 18,
-                card_rect.y + 20,
-                110,
-                70
+            icon_rect = pygame.Rect(card_rect.x + 18, card_rect.y + 20, 110, 70)
+            sprite = self.load_sprite(
+                item.get("sprite"), (icon_rect.width, icon_rect.height)
             )
-            sprite = self.load_sprite(item.get("sprite"), (icon_rect.width, icon_rect.height))
 
             if sprite is not None:
                 screen.blit(sprite, icon_rect)
@@ -198,36 +190,26 @@ class ShopUI:
             screen.blit(name_surface, (card_rect.x + 150, card_rect.y + 18))
 
             description_surface = self.small_font.render(
-                item["description"],
-                True,
-                settings.LIGHT_GRAY
+                item["description"], True, settings.LIGHT_GRAY
             )
             screen.blit(description_surface, (card_rect.x + 150, card_rect.y + 58))
-            price_surface = self.font.render(
-                f"${item['price']}",
-                True,
-                settings.GREEN
-            )
+            price_surface = self.font.render(f"${item['price']}", True, settings.GREEN)
             screen.blit(price_surface, (card_rect.right - 140, card_rect.y + 44))
             y += card_height + card_margin
         if len(items) == 0:
-            text_surface = self.font.render("No items available", True, settings.LIGHT_GRAY)
+            text_surface = self.font.render(
+                "No items available", True, settings.LIGHT_GRAY
+            )
             screen.blit(text_surface, (item_area.x + 30, item_area.y + 30))
 
     def render_message(self, screen):
         if self.shop_manager.last_message == "":
             return
         message_surface = self.small_font.render(
-            self.shop_manager.last_message,
-            True,
-            settings.WHITE
+            self.shop_manager.last_message, True, settings.WHITE
         )
         screen.blit(
-            message_surface,
-            (
-                self.window_rect.x + 24,
-                self.window_rect.bottom - 40
-            )
+            message_surface, (self.window_rect.x + 24, self.window_rect.bottom - 40)
         )
 
     def render_close_button(self, screen):

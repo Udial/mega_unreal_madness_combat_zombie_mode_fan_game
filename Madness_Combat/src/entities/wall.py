@@ -2,16 +2,11 @@ import pygame
 from ... import settings
 
 
-class Wall():
+class Wall:
     def __init__(self, cords_tuple: tuple, is_collideable: bool):
-        self.points = [
-            cords_tuple[0],
-            cords_tuple[1],
-            cords_tuple[2],
-            cords_tuple[3]
-        ]
+        self.points = [cords_tuple[0], cords_tuple[1], cords_tuple[2], cords_tuple[3]]
         self.is_collideable = is_collideable
-        self.collision_line = (cords_tuple[2],cords_tuple[3])
+        self.collision_line = (cords_tuple[2], cords_tuple[3])
 
     def render(self, screen, color, camera=None):
         points = self.points

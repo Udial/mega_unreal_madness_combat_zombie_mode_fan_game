@@ -4,7 +4,7 @@ from ..entities.weapon import Ranged
 
 
 class SaveManager:
-    def __init__(self, save_path = "Madness_combat/saves/savegame.json"):
+    def __init__(self, save_path = "Madness_Combat/saves/savegame.json"):
         self.save_path = save_path
 
     def has_save(self) -> bool:
@@ -13,10 +13,8 @@ class SaveManager:
     def reset_save(self):
         if self.has_save():
             os.remove(self.save_path)
-            print("DEBUG SAVE: save file wiped")
             return True
         
-        print("DEBUG SAVE: No save file to wipe")
         return False
     
     def save_game(self, scene):
@@ -54,12 +52,9 @@ class SaveManager:
 
         with open(self.save_path, "w") as file:
             json.dump(data, file, indent=4)
-        
-        print("DEBUG SAVE: game saved")
     
     def load_game(self, scene):
         if not self.has_save():
-            print("DEBUG SAVE: no save file")
             return False
         
         with open(self.save_path, "r") as file:
@@ -121,5 +116,4 @@ class SaveManager:
 
         scene.camera.update(scene.player)
 
-        print("DEBUG SAVE: game loaded")
         return True

@@ -12,7 +12,7 @@ class BaseEntity:
 
     def update_rect(self):
         self.rect.topleft = (self.pos_x, self.pos_y)
-    
+
     def get_distance_to(self, target) -> int:
         self_pos = pygame.Vector2(self.rect.center)
         target_pos = pygame.Vector2(target.rect.center)

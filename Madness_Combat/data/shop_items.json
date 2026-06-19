@@ -67,6 +67,15 @@
             "price": 100,
             "heal": 40,
             "sprite": "Madness_Combat/assets/sprites/FirstAid.png"
+        },
+        {
+            "id": "barricade",
+            "name": "Barricade kit",
+            "description": "Adds 1 barricade for entry points",
+            "price": 75,
+            "amount": 1,
+            "type": "barricade",
+            "sprite": "Madness_Combat/assets/sprites/barricade.png"
         }
     ],
     "armor": [
@@ -76,7 +85,7 @@
             "description": "Restores 25 armor.",
             "price": 200,
             "charge": 25,
-            "sprite": null
+            "sprite": "Madness_Combat/assets/sprites/hey_suit_battery.png"
         }
     ]
 }

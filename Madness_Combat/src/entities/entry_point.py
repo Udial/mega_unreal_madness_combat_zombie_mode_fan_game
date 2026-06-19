@@ -34,9 +34,9 @@ class EntryPoint(BaseEntity):
         interaction_height = 60
 
         self.player_interaction_rect = pygame.Rect(
-            min(xs),
-            max(ys) - interaction_height,
-            self.width,
+            min(xs) if entry_type in ("top", "left") else self.points[3][0] - 40,
+            self.points[2][1] if entry_type in ("top", "left") else self.points[3][1],
+            self.width if entry_type == "top" else (self.width + 40 if entry_type == "left" else self.width),
             interaction_height
         )
 
@@ -83,7 +83,6 @@ class EntryPoint(BaseEntity):
                 damage_mult = len(self.rapid_spawn_queue)
                 damage_system.apply_damage(self.barricade, ZOMBIE_DAMAGE * damage_mult)
                 self.attack_timer = 0
-                print("DEBUG Barricade damaged")
 
 
     
@@ -133,7 +132,6 @@ class EntryPoint(BaseEntity):
     
     def render(self, screen, color, camera=None):
         points = self.points
-        
         if camera is not None:
             points = camera.apply_points(self.points)
 

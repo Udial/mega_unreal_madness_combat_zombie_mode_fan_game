@@ -10,4 +10,3 @@ class BaseScene:
 
     def render(self, screen):
         pass
-    

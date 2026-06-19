@@ -4,21 +4,25 @@ from ..ui.button import Button
 from ... import settings
 
 
-class GameOverScene(BaseScene):
+class WinScene(BaseScene):
     def __init__(self, game):
         super().__init__(game)
-        self.title_font = pygame.font.SysFont(None, 96)
+        self.title_font = pygame.font.SysFont(None, 92)
         self.text_font = pygame.font.SysFont(None, 36)
         x = settings.CAMERA_WIDTH_MID - settings.BASE_BUTTON_WIDTH // 2
-        self.retry_button = Button(
-            settings.BASE_BUTTON_WIDTH, settings.BASE_BUTTON_HEIGHT, x, 540, "Retry"
+        self.restart_button = Button(
+            settings.BASE_BUTTON_WIDTH,
+            settings.BASE_BUTTON_HEIGHT,
+            x,
+            540,
+            "Play again",
         )
         self.menu_button = Button(
             settings.BASE_BUTTON_WIDTH, settings.BASE_BUTTON_HEIGHT, x, 610, "Main menu"
         )
 
     def handle_event(self, event):
-        if self.retry_button.handle_event(event):
+        if self.restart_button.handle_event(event):
             from .game_scene import GameScene
 
             self.game.scene_manager.set_scene(GameScene(self.game))
@@ -40,14 +44,14 @@ class GameOverScene(BaseScene):
         pass
 
     def render(self, screen):
-        screen.fill((28, 10, 12))
-        title = self.title_font.render("GAME OVER", True, settings.RED)
+        screen.fill((12, 28, 18))
+        title = self.title_font.render("ALL WAVES COMPLETED", True, settings.GREEN)
         title_rect = title.get_rect(center=(settings.CAMERA_WIDTH_MID, 320))
         screen.blit(title, title_rect)
         hint = self.text_font.render(
-            "Press Enter to retry or Esc for menu", True, settings.WHITE
+            "You survived the zombie mode.", True, settings.WHITE
         )
         hint_rect = hint.get_rect(center=(settings.CAMERA_WIDTH_MID, 420))
         screen.blit(hint, hint_rect)
-        self.retry_button.render(screen)
+        self.restart_button.render(screen)
         self.menu_button.render(screen)

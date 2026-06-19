@@ -27,23 +27,17 @@ class PauseMenu:
 
         self.resume_button_rect.center = (
             screen_rect.centerx,
-            screen_rect.centery - 100
+            screen_rect.centery - 100,
         )
-        
-        self.save_button_rect.center = (
-            screen_rect.centerx,
-            screen_rect.centery - 20
-        )
+
+        self.save_button_rect.center = (screen_rect.centerx, screen_rect.centery - 20)
 
         self.save_wipe_button_rect.center = (
             screen_rect.centerx,
-            screen_rect.centery + 60
+            screen_rect.centery + 60,
         )
 
-        self.exit_button_rect.center = (
-            screen_rect.centerx,
-            screen_rect.centery + 140
-        )
+        self.exit_button_rect.center = (screen_rect.centerx, screen_rect.centery + 140)
 
     def handle_event(self, event):
         if not self.is_open:
@@ -57,13 +51,12 @@ class PauseMenu:
 
             if self.save_button_rect.collidepoint(mouse_pos):
                 return "save"
-            
+
             if self.save_wipe_button_rect.collidepoint(mouse_pos):
                 return "wipe_save"
 
             if self.exit_button_rect.collidepoint(mouse_pos):
                 return "exit"
-            
 
         return None
 

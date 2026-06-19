@@ -3,7 +3,7 @@ from ..entities.base_entity import BaseEntity
 
 
 class Player(BaseEntity):
-    def __init__(self, x: int, y: int, width: int , height: int, speed: int, hp: int):
+    def __init__(self, x: int, y: int, width: int, height: int, speed: int, hp: int):
         super().__init__(x, y, width, height)
         self.speed = speed
         self.max_hp = 100
@@ -19,17 +19,16 @@ class Player(BaseEntity):
 
         if camera is not None:
             mos_pos = camera.screen_to_world(mos_pos)
-            
+
         direction = pygame.Vector2(
-            mos_pos[0] - self.rect.centerx,
-            mos_pos[1] - self.rect.centery
-            )
-        
+            mos_pos[0] - self.rect.centerx, mos_pos[1] - self.rect.centery
+        )
+
         if direction.length() > 0:
             direction = direction.normalize()
 
         return direction
-    
+
     def render(self, screen: pygame.surface, color: tuple, camera=None):
         rect = self.rect
 

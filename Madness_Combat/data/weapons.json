@@ -14,7 +14,9 @@
         "sprite": "Madness_Combat/assets/sprites/P1445.png",
         "sprite_width": 60,
         "sprite_height": 30,
-        "offset": 20
+        "offset": 20,
+        "pierce": 0,
+        "muzzle_offset": [70, -5]
     },
     "shotgun": {
         "type": "ranged",
@@ -31,7 +33,9 @@
         "sprite": "Madness_Combat/assets/sprites/Benelli.png",
         "sprite_width": 140,
         "sprite_height": 40,
-        "offset": 40
+        "offset": 40,
+        "pierce": 0,
+        "muzzle_offset": [130, -10]
     },
     "bat": {
         "type": "melee",
@@ -70,7 +74,9 @@
         "sprite": "Madness_Combat/assets/sprites/M16.png",
         "sprite_width": 160,
         "sprite_height": 50,
-        "offset": 40
+        "offset": 40,
+        "pierce": 0,
+        "muzzle_offset": [140, -5]
     },
     "minigun": {
         "type": "ranged",
@@ -87,6 +93,8 @@
         "sprite": "Madness_Combat/assets/sprites/minigun.png",
         "sprite_width": 160,
         "sprite_height": 50,
-        "offset": 40
+        "offset": 40,
+        "pierce": 0,
+        "muzzle_offset": [130, -5]
     }
 }
